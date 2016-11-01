@@ -32,6 +32,8 @@ async def on_ready():
     print("loaded RNG")
     print("---------------------------")
 
+    await bot.change_presence(status=discord.Status.idle, idle=True)
+
 ######################
 ## Misc and Testing ##
 ######################
