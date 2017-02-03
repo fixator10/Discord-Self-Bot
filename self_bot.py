@@ -61,7 +61,7 @@ async def _botshutdown(ctx):
 @bot.command()
 async def source():
     """Source code"""
-    await bot.say("https://github.com/DiNitride/Discord-Self-Bot")
+    await bot.say("https://github.com/DiNitride/Discord-Self-Bot\nhttps://github.com/fixator10/Discord-Self-Bot")
 
 # Invite link to the bot server
 @bot.command()
