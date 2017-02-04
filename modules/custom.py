@@ -31,7 +31,8 @@ class Custom():
 		
     @commands.command(pass_context=True)
     async def roleinfo(self, ctx, rolename : str):
-        """Quote an message by id"""
+        """Get info about Role
+        You must provide full case-sensitive name of role"""
         role = discord.utils.get(ctx.message.server.roles, name=rolename)
         if role == None:
             await self.bot.say("Failed to get role named `"+rolename+"`")
