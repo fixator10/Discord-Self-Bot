@@ -12,6 +12,6 @@ Requires Discord.py
 3. Run `check_requirements.bat` or execute `pip install -r requirements.txt` manually
 4. Press Ctrl+Shift+I in your Discord client or on the Discordapp page in your browser.
 	* Then go to `Local Storage` → http://discordapp.com → copy Value of `token` key
-5. ![Token](http://i.imgur.com/wxuIS8d.png)
+	![Token](http://i.imgur.com/wxuIS8d.png)
 6. Create file `self_token.txt` and paste your token **without quotes**
 7. Run bot via `run.bat` or `python self_bot.py`
