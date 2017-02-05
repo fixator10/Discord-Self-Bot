@@ -84,6 +84,7 @@ class Moderation():
         em.add_field(name="Owner", value=server.owner)
         em.add_field(name="AFK Timeout and Channel", value=str(afk)+" min in "+str(server.afk_channel))
         em.add_field(name="Member Count", value=server.member_count)
+        em.add_field(name="Role Count", value=len(server.roles))
         em.set_image(url=server.icon_url)
         await self.bot.say(embed=em)
 

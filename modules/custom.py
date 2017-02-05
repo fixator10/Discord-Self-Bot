@@ -7,10 +7,21 @@ import re
 import time, datetime
 import matplotlib.colors as colors
 import colorsys
+import random
 
 class Custom():
     def __init__(self, bot):
         self.bot = bot
+
+    @commands.command(pass_context=True)
+    async def signed(self, ctx, *, message : str):
+        """Says something with embedded signature"""
+        em = discord.Embed(title='© Fixator10', description='(Via selfbot)', url='http://fixator10.ru', colour=3640540, timestamp=ctx.message.timestamp)
+        em.add_field(name="«El Psy Kongroo»", value="<:BRS_star:258884213930065920><:kongou_berserk:266927209971712000><:kurisu:266927929479397377><:mayushi:266927849129246721>", inline=False)
+        em.set_footer(text=ctx.message.author.nick or ctx.message.author.name, icon_url=ctx.message.author.avatar_url)
+        await self.bot.say(message, embed=em)
+        await self.bot.delete_message(ctx.message)
+		    
             
     @commands.command(pass_context=True)
     async def quote(self, ctx, messageid : str, *, response : str = None):
@@ -30,7 +41,7 @@ class Custom():
         await self.bot.delete_message(ctx.message)
 		
     @commands.command(pass_context=True)
-    async def roleinfo(self, ctx, role : discord.Role):
+    async def roleinfo(self, ctx, *, role : discord.Role):
         """Get info about role"""
         em = discord.Embed(title=role.name, colour=role.colour)
         em.add_field(name="ID", value=role.id)
@@ -43,6 +54,18 @@ class Custom():
         em.add_field(name="Mentionable", value=str(role.mentionable).replace("True","✔").replace("False","❌"))
         em.add_field(name="Mention", value=role.mention+"\n`"+role.mention+"`")
         em.set_thumbnail(url="https://xenforo.com/community/rgba.php?r=" + str(role.colour.r) + "&g=" + str(role.colour.g) + "&b=" + str(role.colour.b) + "&a=255")
+        await self.bot.say(embed=em)
+        await self.bot.delete_message(ctx.message)
+		
+    @commands.command(pass_context=True)
+    async def rolelist(self, ctx):
+        """Get all roles on this server"""
+        server = ctx.message.server
+        roles = []
+        for elem in server.role_hierarchy:
+            roles.append(elem.name)
+        em = discord.Embed(title="List of roles", description="\n".join([str(x) for x in roles] ), colour=random.randint(0, 16777215))
+        em.set_footer(text="Total number of roles: "+str(len(server.roles)))
         await self.bot.say(embed=em)
         await self.bot.delete_message(ctx.message)
 		
