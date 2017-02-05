@@ -30,25 +30,25 @@ class Custom():
         await self.bot.delete_message(ctx.message)
 		
     @commands.command(pass_context=True)
-    async def roleinfo(self, ctx, rolename : str):
-        """Get info about Role
+    async def roleinfo(self, ctx, role : discord.Role = None):
+        """Get info about role
         You must provide full case-sensitive name of role"""
-        role = discord.utils.get(ctx.message.server.roles, name=rolename)
-        if role == None:
-            await self.bot.say("Failed to get role named `"+rolename+"`")
-        else:
-            em = discord.Embed(title=role.name, colour=role.colour)
-            em.add_field(name="ID", value=role.id)
-            em.add_field(name="Has existed since", value=role.created_at.strftime('%d.%m.%Y %H:%M:%S %Z'))
-            em.add_field(name="Hoist", value=str(role.hoist).replace("True","✔").replace("False","❌"))
-            em.add_field(name="Position", value=role.position)
-            em.add_field(name="Color", value=role.colour)
-            em.add_field(name="Managed", value=str(role.managed).replace("True","✔").replace("False","❌"))
-            em.add_field(name="Mentionable", value=str(role.mentionable).replace("True","✔").replace("False","❌"))
-            em.add_field(name="Mention", value=role.mention+"\n`"+role.mention+"`")
-            em.set_thumbnail(url="https://xenforo.com/community/rgba.php?r=" + str(role.colour.r) + "&g=" + str(role.colour.g) + "&b=" + str(role.colour.b) + "&a=255")
-            await self.bot.say(embed=em)
+        em = discord.Embed(title=role.name, colour=role.colour)
+        em.add_field(name="ID", value=role.id)
+        em.add_field(name="Has existed since", value=role.created_at.strftime('%d.%m.%Y %H:%M:%S %Z'))
+        em.add_field(name="Hoist", value=str(role.hoist).replace("True","✔").replace("False","❌"))
+        em.add_field(name="Position", value=role.position)
+        em.add_field(name="Color", value=role.colour)
+        em.add_field(name="Managed", value=str(role.managed).replace("True","✔").replace("False","❌"))
+        em.add_field(name="Mentionable", value=str(role.mentionable).replace("True","✔").replace("False","❌"))
+        em.add_field(name="Mention", value=role.mention+"\n`"+role.mention+"`")
+        em.set_thumbnail(url="https://xenforo.com/community/rgba.php?r=" + str(role.colour.r) + "&g=" + str(role.colour.g) + "&b=" + str(role.colour.b) + "&a=255")
+        await self.bot.say(embed=em)
         await self.bot.delete_message(ctx.message)
+        
+    @roleinfo.error
+    async def roll_error(self, exception, ctx):
+        await self.bot.say(exception)
 		
     @commands.command(pass_context=True)
     async def hug(self, ctx, user : discord.Member, intensity : int=1):

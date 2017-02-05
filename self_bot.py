@@ -4,7 +4,8 @@ import json
 import asyncio
 import inspect
 import argparse
-
+import sys
+import traceback
 
 
 # Set's bot's desciption and prefixes in a list
@@ -43,6 +44,17 @@ async def on_ready():
     print("---------------------------")
 
     await bot.change_presence(afk=True, status=discord.Status.invisible)
+    
+@bot.event
+async def on_command_error(error, ctx):
+    if isinstance(error, commands.CommandNotFound):
+        await bot.send_message(ctx.message.channel, "An error occured: `" + str(error) + "`")
+        await bot.delete_message(ctx.message)
+    if isinstance(error, commands.MissingRequiredArgument):
+        await bot.send_message(ctx.message.channel, "An error occured: `" + str(error) + "`")
+        await bot.delete_message(ctx.message)
+    else:
+        raise(error)
 
 ########################################################################################################################
 
