@@ -50,10 +50,12 @@ async def on_command_error(error, ctx):
     if isinstance(error, commands.CommandNotFound):
         await bot.send_message(ctx.message.channel, "An error occured: `" + str(error) + "`")
         await bot.delete_message(ctx.message)
-    if isinstance(error, commands.MissingRequiredArgument):
+    elif isinstance(error, commands.MissingRequiredArgument):
         await bot.send_message(ctx.message.channel, "An error occured: `" + str(error) + "`")
         await bot.delete_message(ctx.message)
     else:
+        await bot.send_message(ctx.message.channel, "An error occured: `" + str(error) + "`")
+        await bot.delete_message(ctx.message)
         raise(error)
 
 ########################################################################################################################
