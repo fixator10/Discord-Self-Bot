@@ -31,8 +31,7 @@ class Custom():
 		
     @commands.command(pass_context=True)
     async def roleinfo(self, ctx, role : discord.Role = None):
-        """Get info about role
-        You must provide full case-sensitive name of role"""
+        """Get info about role"""
         em = discord.Embed(title=role.name, colour=role.colour)
         em.add_field(name="ID", value=role.id)
         em.add_field(name="Has existed since", value=role.created_at.strftime('%d.%m.%Y %H:%M:%S %Z'))
