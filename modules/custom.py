@@ -14,16 +14,6 @@ class Custom():
         self.bot = bot
 
     @commands.command(pass_context=True)
-    async def signed(self, ctx, *, message : str):
-        """Says something with embedded signature"""
-        em = discord.Embed(title='© Fixator10', description='(Via selfbot)', url='http://fixator10.ru', colour=3640540, timestamp=ctx.message.timestamp)
-        em.add_field(name="«El Psy Kongroo»", value="<:BRS_star:258884213930065920><:kongou_berserk:266927209971712000><:kurisu:266927929479397377><:mayushi:266927849129246721>", inline=False)
-        em.set_footer(text=ctx.message.author.nick or ctx.message.author.name, icon_url=ctx.message.author.avatar_url)
-        await self.bot.say(message, embed=em)
-        await self.bot.delete_message(ctx.message)
-		    
-            
-    @commands.command(pass_context=True)
     async def quote(self, ctx, messageid : str, *, response : str = None):
         """Quote an message by id"""
         message = discord.utils.get(self.bot.messages, id=messageid)
