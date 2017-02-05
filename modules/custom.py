@@ -11,7 +11,7 @@ import colorsys
 class Custom():
     def __init__(self, bot):
         self.bot = bot
-
+            
     @commands.command(pass_context=True)
     async def quote(self, ctx, messageid : str, *, response : str = None):
         """Quote an message by id"""
@@ -30,10 +30,11 @@ class Custom():
         await self.bot.delete_message(ctx.message)
 		
     @commands.command(pass_context=True)
-    async def roleinfo(self, ctx, role : discord.Role = None):
+    async def roleinfo(self, ctx, role : discord.Role):
         """Get info about role"""
         em = discord.Embed(title=role.name, colour=role.colour)
         em.add_field(name="ID", value=role.id)
+        em.add_field(name="Perms", value="["+str(role.permissions.value)+"](https://discordapi.com/permissions.html#"+str(role.permissions.value)+")")
         em.add_field(name="Has existed since", value=role.created_at.strftime('%d.%m.%Y %H:%M:%S %Z'))
         em.add_field(name="Hoist", value=str(role.hoist).replace("True","✔").replace("False","❌"))
         em.add_field(name="Position", value=role.position)
@@ -44,10 +45,6 @@ class Custom():
         em.set_thumbnail(url="https://xenforo.com/community/rgba.php?r=" + str(role.colour.r) + "&g=" + str(role.colour.g) + "&b=" + str(role.colour.b) + "&a=255")
         await self.bot.say(embed=em)
         await self.bot.delete_message(ctx.message)
-        
-    @roleinfo.error
-    async def roll_error(self, exception, ctx):
-        await self.bot.say(exception)
 		
     @commands.command(pass_context=True)
     async def hug(self, ctx, user : discord.Member, intensity : int=1):
