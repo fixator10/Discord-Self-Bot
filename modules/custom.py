@@ -12,7 +12,7 @@ import random
 class Custom():
     def __init__(self, bot):
         self.bot = bot
-
+            
     @commands.command(pass_context=True)
     async def quote(self, ctx, messageid : str, *, response : str = None):
         """Quote an message by id"""
@@ -55,7 +55,40 @@ class Custom():
         for elem in server.role_hierarchy:
             roles.append(elem.name)
         em = discord.Embed(title="List of roles", description="\n".join([str(x) for x in roles] ), colour=random.randint(0, 16777215))
-        em.set_footer(text="Total number of roles: "+str(len(server.roles)))
+        em.set_footer(text="Total count of roles: "+str(len(server.roles)))
+        await self.bot.say(embed=em)
+        await self.bot.delete_message(ctx.message)
+		
+    @commands.command(pass_context=True)
+    async def chaninfo(self, ctx, *, channel : discord.Channel):
+        """Get info about channel"""
+        changed_roles = []
+        for elem in channel.changed_roles:
+            changed_roles.append(elem.name)
+        em = discord.Embed(title=channel.name, description=channel.topic, colour=random.randint(0, 16777215))
+        em.add_field(name="ID", value=channel.id)
+        em.add_field(name="Type", value=str(channel.type).replace("voice","🔈").replace("text","📰"))
+        em.add_field(name="Has existed since", value=channel.created_at.strftime('%d.%m.%Y %H:%M:%S %Z'))
+        em.add_field(name="Position", value=channel.position)
+        em.add_field(name="Changed roles permissions", value="\n".join([str(x) for x in changed_roles] ))
+        em.add_field(name="Mention", value=channel.mention+"\n`"+channel.mention+"`")
+        await self.bot.say(embed=em)
+        await self.bot.delete_message(ctx.message) 
+       
+    @commands.command(pass_context=True)
+    async def chanlist(self, ctx):
+        """Get all roles on this server"""
+        server = ctx.message.server
+        vchans = []
+        tchans = []
+        for elem in server.channels:
+            if str(elem.type) == "voice":
+                vchans.append(elem.name)
+            elif str(elem.type) == "text":
+                tchans.append(elem.name)
+        em = discord.Embed(title="Text channels:", description="\n".join([str(x) for x in tchans] ), colour=random.randint(0, 16777215))
+        em.add_field(name="Voice channels:", value="\n".join([str(x) for x in vchans] ), inline=False)
+        em.set_footer(text="Total count of channels: "+str(len(server.channels))+" | Voice Channels: "+str(len(vchans)) + " | Text Channels: "+str(len(tchans)))
         await self.bot.say(embed=em)
         await self.bot.delete_message(ctx.message)
 		
