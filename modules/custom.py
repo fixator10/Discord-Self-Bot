@@ -12,7 +12,18 @@ import random
 class Custom():
     def __init__(self, bot):
         self.bot = bot
-            
+
+    @commands.command(pass_context=True)
+    async def embed(self, ctx, *, message : str):
+        """Says something via embed
+        Useful for using emojis on any server without Nitro
+        
+        Inline code at start and at end of message will be removed"""
+        message = message.strip("` ")
+        em = discord.Embed(description=message, colour=ctx.message.author.colour)
+        await self.bot.say(embed=em)
+        await self.bot.delete_message(ctx.message)
+		    
     @commands.command(pass_context=True)
     async def quote(self, ctx, messageid : str, *, response : str = None):
         """Quote an message by id"""
