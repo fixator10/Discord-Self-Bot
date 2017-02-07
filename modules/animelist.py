@@ -35,24 +35,14 @@ class Animelist:
         self.credentials = dataIO.load_json(self.file_path)
 
     @commands.command(pass_context=True)
-    async def animeset(self, ctx):
+    async def animeset(self, ctx, username : str, password : str):
         """Sets your username and password from myanimelist"""
-        await self.bot.whisper("Type your user name. You can reply in this private msg")
-        username = await self.bot.wait_for_message(timeout=15, author=ctx.message.author)
-        if username is None:
-            return
-        else:
-            self.credentials["Username"] = username.content
-            dataIO.save_json(self.file_path, self.credentials)
-            await self.bot.whisper("Ok thanks. Now what is your password?")
-            password = await self.bot.wait_for_message(timeout=15, author=ctx.message.author)
-            if password is None:
-                return
-            else:
-                self.credentials["Password"] = password.content
-                dataIO.save_json(self.file_path, self.credentials)
-                await self.bot.whisper("Setup complete. Account details added.\nTry searching for "
-                                       "an anime using {}anime".format(ctx.prefix))
+        self.credentials["Username"] = username
+        self.credentials["Password"] = password
+        dataIO.save_json(self.file_path, self.credentials)
+        await self.bot.say("Setup complete. Account details added.\nTry searching for "
+                           "an anime using {}anime".format(ctx.prefix))
+        await self.bot.delete_message(ctx.message)
 
     @commands.command(pass_context=True, no_pm=True)
     async def anime(self, ctx, *, title):
