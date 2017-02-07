@@ -18,7 +18,7 @@ class Custom():
         """Says something via embed
         Useful for using emojis on any server without Nitro
         
-        Inline code at start and at end of message will be removed"""
+        Inline code markdown at start and at end of message will be removed"""
         message = message.strip("` ")
         em = discord.Embed(description=message, colour=ctx.message.author.colour)
         await self.bot.say(embed=em)

@@ -57,6 +57,9 @@ class Moderation():
         If no member is specified, it defaults to the sender"""
         if member == None:
             member = ctx.message.author
+        rolelist = []
+        for elem in member.roles:
+            rolelist.append(elem.name)
         em = discord.Embed(title=member.nick, colour=member.colour)
         em.add_field(name="Name", value=member.name)
         em.add_field(name="Joined server", value=member.joined_at.strftime('%d.%m.%Y %H:%M:%S %Z'))
@@ -64,6 +67,8 @@ class Moderation():
         em.add_field(name="Has existed since", value=member.created_at.strftime('%d.%m.%Y %H:%M:%S %Z'))
         em.add_field(name="Color", value=member.colour)
         em.add_field(name="Bot?", value=str(member.bot).replace("True","✔").replace("False","❌"))
+        em.add_field(name="Server perms", value="["+str(member.server_permissions.value)+"](https://discordapi.com/permissions.html#"+str(member.server_permissions.value)+")")
+        em.add_field(name="Roles", value="\n".join([str(x) for x in rolelist] ), inline=False)
         em.set_image(url=member.avatar_url)
         em.set_thumbnail(url="https://xenforo.com/community/rgba.php?r=" + str(member.colour.r) + "&g=" + str(member.colour.g) + "&b=" + str(member.colour.b) + "&a=255")
         await self.bot.say(embed=em)
@@ -76,15 +81,29 @@ class Moderation():
         self.serverinfo"""
         server = ctx.message.server
         afk = server.afk_timeout / 60
-        em = discord.Embed(title="Server info", colour=random.randint(0, 16777215))
+        vip_regs = str("VIP_REGIONS" in server.features).replace("True","✔").replace("False","❌")
+        van_url = str("VANITY_URL" in server.features).replace("True","✔").replace("False","❌")
+        inv_splash = "INVITE_SPLASH" in server.features
+        em = discord.Embed(title="Server info", colour=server.owner.colour)
         em.add_field(name="Name", value=server.name)
         em.add_field(name="Server ID", value=server.id)
         em.add_field(name="Region", value=server.region)
         em.add_field(name="Existed since", value=server.created_at.strftime('%d.%m.%Y %H:%M:%S %Z'))
         em.add_field(name="Owner", value=server.owner)
         em.add_field(name="AFK Timeout and Channel", value=str(afk)+" min in "+str(server.afk_channel))
+        em.add_field(name="Verification level", value=str(server.verification_level).replace("none","None").replace("low","Low").replace("medium","Medium").replace("high","(╯°□°）╯︵ ┻━┻"))
+        em.add_field(name="2FA admins", value=str(server.mfa_level).replace("0","❌").replace("1","✔"))
         em.add_field(name="Member Count", value=server.member_count)
         em.add_field(name="Role Count", value=len(server.roles))
+        em.add_field(name="Channel Count", value=len(server.channels))
+        em.add_field(name="VIP Voice Regions", value=vip_regs)
+        em.add_field(name="Vanity URL", value=van_url)
+        if inv_splash == False:
+            em.add_field(name="Invite Splash", value="❌")
+        elif server.splash_url == "":
+            em.add_field(name="Invite Splash", value="✔")
+        else:
+            em.add_field(name="Invite Splash", value="✔ [🔗]("+server.splash_url+")")
         em.set_image(url=server.icon_url)
         await self.bot.say(embed=em)
 

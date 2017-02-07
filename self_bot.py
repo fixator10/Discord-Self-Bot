@@ -41,6 +41,8 @@ async def on_ready():
     print("Loaded Anime")
     bot.load_extension("modules.custom")
     print("Loaded Custom")
+    bot.load_extension("modules.penis")
+    print("Loaded Penis")
     print("---------------------------")
 
     await bot.change_presence(afk=True, status=discord.Status.invisible)
