@@ -13,7 +13,7 @@ Requires Discord.py
 3. [Download copy of bot](https://github.com/fixator10/Discord-Self-Bot/archive/master.zip)
 4. Run `check_requirements.bat` or execute `pip install -r requirements.txt` manually
 5. Press Ctrl+Shift+I in your Discord client or on the Discordapp page in your browser.
-	* Then go to `Local Storage` → http://discordapp.com → copy Value of `token` key
+	* Then go to `Application` → `Local Storage` → http://discordapp.com → copy Value of `token` key
 	![Token](http://i.imgur.com/wxuIS8d.png)
 6. Create file `self_token.txt` and paste your token **without quotes**
 7. Run bot via `run.bat` or `python self_bot.py`

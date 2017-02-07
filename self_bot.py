@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from modules.utils.dataIO import fileIO
 import json
 import asyncio
 import inspect
@@ -7,7 +8,15 @@ import argparse
 import sys
 import traceback
 
-
+initial_extensions = [
+    'admin',
+    'moderation',
+    'tags',
+    'animelist',
+    'custom',
+    'penis'
+]
+    
 # Set's bot's desciption and prefixes in a list
 description = "FG17: Discord Selfbot"
 bot = commands.Bot(command_prefix=["self."], description=description, self_bot=True)
@@ -26,37 +35,30 @@ async def on_ready():
     print(bot.user.name)
     print(bot.user.id)
     print("---------------------------")
-
-    # Outputs the state of loading the modules to the console
-    # So I know they have loaded correctly
-    print("Loading Modules")
-    print("---------------------------")
-    bot.load_extension("modules.moderation")
-    print("Loaded Moderation")
-    bot.load_extension("modules.admin")
-    print("Loaded Admin")
-    bot.load_extension("modules.tags")
-    print("Loaded Tags")
-    bot.load_extension("modules.animelist")
-    print("Loaded Anime")
-    bot.load_extension("modules.custom")
-    print("Loaded Custom")
-    bot.load_extension("modules.penis")
-    print("Loaded Penis")
+    
+    print("Modules Loaded:")
+    for extension in initial_extensions:
+        try:
+            bot.load_extension("modules." + extension)
+            print("* " + extension)
+        except Exception as e:
+            print('Failed to load extension {}\n{}: {}'.format(
+                extension, type(e).__name__, e))
     print("---------------------------")
 
     await bot.change_presence(afk=True, status=discord.Status.invisible)
     
 @bot.event
 async def on_command_error(error, ctx):
-    if isinstance(error, commands.CommandNotFound) or isinstance(error, commands.MissingRequiredArgument) or isinstance(error, commands.BadArgument):
-        await bot.send_message(ctx.message.channel, "An error occured: `" + str(error) + "`")
+    if isinstance(error, commands.MissingRequiredArgument) or isinstance(error, commands.BadArgument):
+        await bot.send_message(ctx.message.channel, str(error))
         await bot.delete_message(ctx.message)
+    elif isinstance(error, commands.CommandNotFound):
+        pass
     else:
-        await bot.send_message(ctx.message.channel, "An error occured: `" + str(error) + "`")
+        await bot.send_message(ctx.message.channel, "\u26A0 An error occurred: `" + str(error) + "`\nCheck console for further information\n\nIssue tracker: <https://github.com/fixator10/Discord-Self-Bot/issues>")
         await bot.delete_message(ctx.message)
         raise(error)
-
 ########################################################################################################################
 
 # Ping Pong
@@ -74,7 +76,7 @@ async def _botshutdown(ctx):
 @bot.command()
 async def source():
     """Source code"""
-    await bot.say("https://github.com/DiNitride/Discord-Self-Bot\nhttps://github.com/fixator10/Discord-Self-Bot")
+    await bot.say("<@95953002774413312>'s original: <https://github.com/DiNitride/Discord-Self-Bot>\n\n<@131813999326134272>'s fork (this): https://github.com/fixator10/Discord-Self-Bot")
 
 # Invite link to the bot server
 @bot.command()
@@ -83,16 +85,13 @@ async def server():
     await bot.say("https://discord.gg/Eau7uhf")
 	
 @bot.command(pass_context=True)
-async def reload(ctx, module : str = None):
+async def reload(ctx, module : str):
     """Reloads module"""
-    if module == None:
-        await bot.say("Please, specify a module to reload")
-    else:
-        try:
-            bot.unload_extension("modules."+module)
-            bot.load_extension("modules."+module)
-        except Exception as e:
-            await bot.say("{}: {}".format(type(e).__name__, e))
+    try:
+        bot.unload_extension("modules."+module)
+        bot.load_extension("modules."+module)
+    except Exception as e:
+        await bot.say("{}: {}".format(type(e).__name__, e))
     await bot.delete_message(ctx.message)
 
 @bot.command(pass_context=True, name="eval")
