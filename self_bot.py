@@ -144,8 +144,8 @@ async def resetnicks(ctx):
 if __name__ == "__main__":
 
     if os.path.exists("self_token.txt"):
-        with open("self_token.txt") as token:
-            bot.run(token.read(), bot=False)
+        userinfo = dataIO.load_json("self_token.txt")
+        bot.run(userinfo["token"], bot=False)
     if os.path.exists("self_password.txt"):
         userinfo = dataIO.load_json("self_password.txt")
         bot.run(userinfo["login"], userinfo["password"], bot=False)

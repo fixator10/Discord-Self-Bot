@@ -17,3 +17,4 @@ Requires Discord.py
 	* Then go to `Application` → `Local Storage` → http://discordapp.com → copy Value of `token` key
 	![Token](http://i.imgur.com/wxuIS8d.png)
 5. Run bot via `run.bat`, it will prompt to enter username/password or token during initialization
+6. Run `login.bat` anytime you want to change your credentials
