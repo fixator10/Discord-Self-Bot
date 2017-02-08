@@ -1,4 +1,6 @@
 self_token.txt
+self_password.txt
 *.pyc
+.idea
 tags.json
 desktop.ini
