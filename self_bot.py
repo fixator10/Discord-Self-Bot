@@ -1,9 +1,11 @@
 import discord
 from discord.ext import commands
 from modules.utils.dataIO import fileIO
+from modules.utils.dataIO import dataIO
 import json
 import asyncio
 import inspect
+import os
 import argparse
 import sys
 import traceback
@@ -141,5 +143,9 @@ async def resetnicks(ctx):
 
 if __name__ == "__main__":
 
-    with open("self_token.txt") as token:
-        bot.run(token.read(), bot=False)
+    if os.path.exists("self_token.txt"):
+        with open("self_token.txt") as token:
+            bot.run(token.read(), bot=False)
+    if os.path.exists("self_password.txt"):
+        userinfo = dataIO.load_json("self_password.txt")
+        bot.run(userinfo["login"], userinfo["password"], bot=False)

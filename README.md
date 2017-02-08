@@ -10,10 +10,10 @@ Requires Discord.py
 	* Check `Add to PATH` - it must be enabled during installation
 2. Install [git](https://git-scm.com/download/win)
 	* Be sure to select `Run Git from the Windows Command Prompt` on `Adjusting your PATH environment` installation screen
-3. [Download copy of bot](https://github.com/fixator10/Discord-Self-Bot/archive/master.zip)
-4. Run `check_requirements.bat` or execute `pip install -r requirements.txt` manually
-5. Press Ctrl+Shift+I in your Discord client or on the Discordapp page in your browser.
+3. [Download copy of bot](https://github.com/fixator10/Discord-Self-Bot/archive/master.zip) and unzip
+4. You have two possibilities to login
+    - Use your login and passwprd
+    - Press Ctrl+Shift+I in your Discord client or on the Discordapp page in your browser.
 	* Then go to `Application` → `Local Storage` → http://discordapp.com → copy Value of `token` key
 	![Token](http://i.imgur.com/wxuIS8d.png)
-6. Create file `self_token.txt` and paste your token **without quotes**
-7. Run bot via `run.bat` or `python self_bot.py`
+5. Run bot via `run.bat`, it will prompt to enter username/password or token during initialization
