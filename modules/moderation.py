@@ -12,8 +12,6 @@ class Moderation():
     @commands.command()
     async def ban(self, member: discord.Member = None):
         """Bans a member
-        Usage:
-        self.ban @recchan
         User must have ban member permissions"""
         # Are they trying to ban nobody? Are they stupid?
         # Why do they have mod powers if they're this much of an idiot?
@@ -31,8 +29,6 @@ class Moderation():
     @commands.command()
     async def kick(self, member: discord.Member = None):
         """Kicks a member
-        Usage:
-        self.kick @recchan
         User must have kick member permissions"""
         # Same as above, are they stupid
         if member is None:
@@ -49,12 +45,9 @@ class Moderation():
     # Server info and member info
 
     # Gives the user some basic info on a user
-    @commands.command(pass_context=True)
+    @commands.command(pass_context=True, no_pm=True)
     async def info(self, ctx, member : discord.Member = None):
-        """Infomation on a user
-        Usage:
-        self.info @DiNitride
-        If no member is specified, it defaults to the sender"""
+        """Infomation on a user"""
         if member == None:
             member = ctx.message.author
         rolelist = []
@@ -74,12 +67,17 @@ class Moderation():
         await self.bot.say(embed=em)
 
     # Server Info
-    @commands.command(pass_context=True)
-    async def serverinfo(self, ctx):
-        """Shows server information
-        Usage:
-        self.serverinfo"""
-        server = ctx.message.server
+    @commands.command(pass_context=True, no_pm=True)
+    async def serverinfo(self, ctx, server : str = None):
+        """Shows server information"""
+        if server == None:
+            server = ctx.message.server
+        else:
+            server = discord.utils.get(self.bot.servers, id=server)
+        if server == None:
+            await self.bot.say("Failed to get server with provided ID")
+            await self.bot.delete_message(ctx.message)
+            return
         afk = server.afk_timeout / 60
         vip_regs = str("VIP_REGIONS" in server.features).replace("True","✔").replace("False","❌")
         van_url = str("VANITY_URL" in server.features).replace("True","✔").replace("False","❌")
@@ -106,6 +104,7 @@ class Moderation():
             em.add_field(name="Invite Splash", value="✔ [🔗]("+server.splash_url+")")
         em.set_image(url=server.icon_url)
         await self.bot.say(embed=em)
+        await self.bot.delete_message(ctx.message)
 
 def setup(bot):
     bot.add_cog(Moderation(bot))

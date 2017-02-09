@@ -31,8 +31,14 @@ class Custom():
         if message == None:
             await self.bot.say("Failed to get message with id `"+messageid+"`")
         else:
-            em = discord.Embed(description=message.content, colour=message.author.colour, timestamp=message.timestamp)
-            em.set_author(name=message.author.nick or message.author.name, icon_url=message.author.avatar_url)
+            if message.channel.is_private:
+                colour = discord.Colour.default()
+                name = message.author.name
+            else:
+                colour = message.author.colour
+                name = message.author.nick or message.author.name
+            em = discord.Embed(description=message.content, colour=colour, timestamp=message.timestamp)
+            em.set_author(name=name, icon_url=message.author.avatar_url)
             em.set_footer(text=message.author.name+"#"+message.author.discriminator)
             attachment = discord.utils.get(message.attachments)
             if attachment != None:
@@ -41,7 +47,7 @@ class Custom():
             await self.bot.say(response, embed=em)
         await self.bot.delete_message(ctx.message)
 		
-    @commands.command(pass_context=True)
+    @commands.command(pass_context=True, no_pm=True)
     async def roleinfo(self, ctx, *, role : discord.Role):
         """Get info about role"""
         em = discord.Embed(title=role.name, colour=role.colour)
@@ -58,19 +64,28 @@ class Custom():
         await self.bot.say(embed=em)
         await self.bot.delete_message(ctx.message)
 		
-    @commands.command(pass_context=True)
-    async def rolelist(self, ctx):
-        """Get all roles on this server"""
-        server = ctx.message.server
+    @commands.command(pass_context=True, no_pm=True)
+    async def rolelist(self, ctx, server : str = None):
+        """Get all roles on server"""
+        if server == None:
+            server = ctx.message.server
+        else:
+            server = discord.utils.get(self.bot.servers, id=server)
+        if server == None:
+            await self.bot.say("Failed to get server with provided ID")
+            await self.bot.delete_message(ctx.message)
+            return
         roles = []
+        rolesids = []
         for elem in server.role_hierarchy:
             roles.append(elem.name)
-        em = discord.Embed(title="List of roles", description="\n".join([str(x) for x in roles] ), colour=random.randint(0, 16777215))
+            rolesids.append(elem.id)
+        em = discord.Embed(title="List of roles", description="\n".join([str(x) for x in roles]), colour=random.randint(0, 16777215))
         em.set_footer(text="Total count of roles: "+str(len(server.roles)))
         await self.bot.say(embed=em)
         await self.bot.delete_message(ctx.message)
 		
-    @commands.command(pass_context=True)
+    @commands.command(pass_context=True, no_pm=True)
     async def chaninfo(self, ctx, *, channel : discord.Channel):
         """Get info about channel"""
         changed_roles = []
@@ -86,10 +101,17 @@ class Custom():
         await self.bot.say(embed=em)
         await self.bot.delete_message(ctx.message) 
        
-    @commands.command(pass_context=True)
-    async def chanlist(self, ctx):
-        """Get all roles on this server"""
-        server = ctx.message.server
+    @commands.command(pass_context=True, no_pm=True)
+    async def chanlist(self, ctx, server : str = None):
+        """Get all channels on server"""
+        if server == None:
+            server = ctx.message.server
+        else:
+            server = discord.utils.get(self.bot.servers, id=server)
+        if server == None:
+            await self.bot.say("Failed to get server with provided ID")
+            await self.bot.delete_message(ctx.message)
+            return
         vchans = []
         tchans = []
         for elem in server.channels:
@@ -130,9 +152,6 @@ class Custom():
         """
         if user != None:
             msg = ""
-            if user.id == self.bot.user.id:
-                user = ctx.message.author
-                msg = "Nice try. You think this is funny? How about *this* instead:\n\n"
             char = "abcdefghijklmnopqrstuvwxyz"
             tran = "ɐqɔpǝɟƃɥᴉɾʞlɯuodbɹsʇnʌʍxʎz"
             table = str.maketrans(char, tran)
@@ -143,7 +162,7 @@ class Custom():
             name = name.translate(table)
             await self.bot.say(msg + "(╯°□°）╯︵ " + name[::-1])
         else:
-            await self.bot.say("*flips a coin and... " + choice(["HEADS!*", "TAILS!*"]))
+            await self.bot.say("*flips a coin and... " + random.choice(["HEADS!*", "TAILS!*"]))
         await self.bot.delete_message(ctx.message)
 		
     @commands.command(pass_context=True, no_pm=True, name='thetime')
