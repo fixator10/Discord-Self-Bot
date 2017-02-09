@@ -16,7 +16,8 @@ initial_extensions = [
     'tags',
     'animelist',
     'custom',
-    'penis'
+    'penis',
+    'eval'
 ]
     
 # Set's bot's desciption and prefixes in a list
