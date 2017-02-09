@@ -107,7 +107,7 @@ class Eval:
                 await self.bot.send_message(msg.channel, 'Unexpected error: `{}`'.format(e))
                 
     @commands.command(pass_context=True)
-    async def eval_extended(self, ctx: commands.context.Context, *, code: str):
+    async def eval2(self, ctx: commands.context.Context, *, code: str):
         """Evaluates code"""
         code = code.strip('` ')
         python = '```py\n{}\n```'
