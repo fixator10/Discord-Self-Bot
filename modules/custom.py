@@ -76,10 +76,8 @@ class Custom():
             await self.bot.delete_message(ctx.message)
             return
         roles = []
-        rolesids = []
         for elem in server.role_hierarchy:
             roles.append(elem.name)
-            rolesids.append(elem.id)
         em = discord.Embed(title="List of roles", description="\n".join([str(x) for x in roles]), colour=random.randint(0, 16777215))
         em.set_footer(text="Total count of roles: "+str(len(server.roles)))
         await self.bot.say(embed=em)
