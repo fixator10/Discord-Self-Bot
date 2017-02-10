@@ -9,7 +9,7 @@ Requires Discord.py
 1. Install [Python](https://www.python.org/downloads/) (recommended version is [3.5](https://www.python.org/downloads/))
 	* Check `Add to PATH` - it must be enabled during installation
 2. Install [git](https://git-scm.com/download/win)
-	* Be sure to select `Run Git from the Windows Command Prompt` on `Adjusting your PATH environment` installation screen
+	* Be sure to select `Use Git from the Windows Command Prompt` on `Adjusting your PATH environment` installation screen
 3. [Download copy of bot](https://github.com/fixator10/Discord-Self-Bot/archive/master.zip) and unzip
 4. You have two possibilities to login
     - Use your login and passwprd

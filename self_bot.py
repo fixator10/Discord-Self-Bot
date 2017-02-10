@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+from __future__ import print_function
 import discord
 from discord.ext import commands
 from modules.utils.dataIO import fileIO
@@ -53,7 +55,7 @@ async def on_ready():
     
 @bot.event
 async def on_command_error(error, ctx):
-    if isinstance(error, commands.MissingRequiredArgument) or isinstance(error, commands.BadArgument):
+    if isinstance(error, commands.MissingRequiredArgument) or isinstance(error, commands.BadArgument) or isinstance(error, commands.NoPrivateMessage):
         await bot.send_message(ctx.message.channel, str(error))
         await bot.delete_message(ctx.message)
     elif isinstance(error, commands.CommandNotFound):

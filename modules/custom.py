@@ -47,8 +47,8 @@ class Custom():
             await self.bot.say(response, embed=em)
         await self.bot.delete_message(ctx.message)
 		
-    @commands.command(pass_context=True, no_pm=True)
-    async def roleinfo(self, ctx, *, role : discord.Role):
+    @commands.command(pass_context=True, no_pm=True, aliases=['roleinfo'])
+    async def role(self, ctx, *, role : discord.Role):
         """Get info about role"""
         em = discord.Embed(title=role.name, colour=role.colour)
         em.add_field(name="ID", value=role.id)
@@ -64,8 +64,8 @@ class Custom():
         await self.bot.say(embed=em)
         await self.bot.delete_message(ctx.message)
 		
-    @commands.command(pass_context=True, no_pm=True)
-    async def rolelist(self, ctx, server : str = None):
+    @commands.command(pass_context=True, no_pm=True, aliases=['listroles', 'rolelist'])
+    async def roles(self, ctx, server : str = None):
         """Get all roles on server"""
         if server == None:
             server = ctx.message.server
@@ -83,8 +83,8 @@ class Custom():
         await self.bot.say(embed=em)
         await self.bot.delete_message(ctx.message)
 		
-    @commands.command(pass_context=True, no_pm=True)
-    async def chaninfo(self, ctx, *, channel : discord.Channel):
+    @commands.command(pass_context=True, no_pm=True, aliases=['channelinfo', 'chaninfo', 'chan'])
+    async def channel(self, ctx, *, channel : discord.Channel):
         """Get info about channel"""
         changed_roles = []
         for elem in channel.changed_roles:
@@ -99,8 +99,8 @@ class Custom():
         await self.bot.say(embed=em)
         await self.bot.delete_message(ctx.message) 
        
-    @commands.command(pass_context=True, no_pm=True)
-    async def chanlist(self, ctx, server : str = None):
+    @commands.command(pass_context=True, no_pm=True, aliases=['channellist', 'listchannels'])
+    async def channels(self, ctx, server : str = None):
         """Get all channels on server"""
         if server == None:
             server = ctx.message.server
@@ -120,6 +120,26 @@ class Custom():
         em = discord.Embed(title="Text channels:", description="\n".join([str(x) for x in tchans] ), colour=random.randint(0, 16777215))
         em.add_field(name="Voice channels:", value="\n".join([str(x) for x in vchans] ), inline=False)
         em.set_footer(text="Total count of channels: "+str(len(server.channels))+" | Voice Channels: "+str(len(vchans)) + " | Text Channels: "+str(len(tchans)))
+        await self.bot.say(embed=em)
+        await self.bot.delete_message(ctx.message)
+        
+    @commands.command(pass_context=True, no_pm=True, aliases=['emojiinfo', 'emojinfo'])
+    async def emoji(self, ctx, *, emoji : discord.Emoji):
+        """Get info about emoji
+        
+        Works only with nonstandart emojis (non-unicode)"""
+        allowed_roles = []
+        for elem in emoji.roles:
+            allowed_roles.append(elem.name)
+        em = discord.Embed(title=emoji.name, colour=random.randint(0, 16777215))
+        em.add_field(name="ID", value=emoji.id)
+        em.add_field(name="Has existed since", value=emoji.created_at.strftime('%d.%m.%Y %H:%M:%S %Z'))
+        em.add_field(name="\":\" required", value=str(emoji.require_colons).replace("True","✔").replace("False","❌"))
+        em.add_field(name="Managed", value=str(emoji.managed).replace("True","✔").replace("False","❌"))
+        em.add_field(name="Server", value=emoji.server)
+        if len(allowed_roles) > 0:
+            em.add_field(name="Roles", value="\n".join([str(x) for x in allowed_roles] ))
+        em.set_image(url=emoji.url)
         await self.bot.say(embed=em)
         await self.bot.delete_message(ctx.message)
 		
