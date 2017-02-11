@@ -1,5 +1,6 @@
-self_token.txt
-self_password.txt
+self_token.json
+self_password.json
+credentials.json
 *.pyc
 .idea
 tags.json
