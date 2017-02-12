@@ -1,14 +1,12 @@
-import discord
-from discord.ext import commands
-import json
 import asyncio
+import json
+
+from discord.ext import commands
 
 tag_location = "tags.json"
 
-class Tags():
 
-
-
+class Tags:
     def __init__(self, bot):
         self.bot = bot
 
@@ -56,7 +54,7 @@ class Tags():
         await self.bot.delete_message(ctx.message)
 
     @commands.command(pass_context=True)
-    async def tag(self, ctx, userinput : str, *, output: str = None):
+    async def tag(self, ctx, userinput: str, *, output: str = None):
         """Adds or displays a tag
         Usage:
         self.tag tag_name tag_data
@@ -80,6 +78,7 @@ class Tags():
             with open(tag_location, "w") as data:
                 data.write(save)
             await asyncio.sleep(60)
+
 
 def setup(bot):
     bot.add_cog(Tags(bot))
