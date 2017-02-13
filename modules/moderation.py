@@ -45,7 +45,8 @@ class Moderation:
     # Server info and member info
 
     # Gives the user some basic info on a user
-    @commands.command(pass_context=True, no_pm=True)
+    @commands.command(pass_context=True, no_pm=True, aliases=['memberinfo', 'meminfo', 'membinfo',
+                                                              'member', 'userinfo', 'user'])
     async def info(self, ctx, member: discord.Member = None):
         """Information on a user"""
         if member is None:
@@ -71,7 +72,7 @@ class Moderation:
         await self.bot.delete_message(ctx.message)
 
     # Server Info
-    @commands.command(pass_context=True, no_pm=True)
+    @commands.command(pass_context=True, no_pm=True, aliases=['servinfo', 'serv', 'sv'])
     async def serverinfo(self, ctx, server: str = None):
         """Shows server information"""
         if server is None:

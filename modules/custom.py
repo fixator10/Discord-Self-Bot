@@ -8,11 +8,85 @@ import time
 import discord
 import matplotlib.colors as colors
 from discord.ext import commands
+from modules.utils.dataIO import dataIO
+
+
+def rgb_to_hex(rgb_tuple):
+    return colors.rgb2hex([1.0 * x / 255 for x in rgb_tuple])
+
+
+def hex_to_rgb(hex_string):
+    rgb = colors.hex2color(hex_string)
+    return tuple([int(255 * x) for x in rgb])
+
+
+def get_int_from_rgb(rgb):
+    red = rgb[0]
+    green = rgb[1]
+    blue = rgb[2]
+    rgb_int = (red << 16) + (green << 8) + blue
+    return rgb_int
+
+
+def get_rgb_from_int(rgb_int):
+    blue = rgb_int & 255
+    green = (rgb_int >> 8) & 255
+    red = (rgb_int >> 16) & 255
+    return red, green, blue
+
+
+def cmyk_to_rgb(c, m, y, k):
+    rgb_scale = 255
+    cmyk_scale = 100
+    """
+    """
+    r = rgb_scale * (1.0 - (c + k) / float(cmyk_scale))
+    g = rgb_scale * (1.0 - (m + k) / float(cmyk_scale))
+    b = rgb_scale * (1.0 - (y + k) / float(cmyk_scale))
+    return r, g, b
+
+
+def rgb_to_cmyk(r, g, b):
+    rgb_scale = 255
+    cmyk_scale = 100
+    if (r == 0) and (g == 0) and (b == 0):
+        # black
+        return 0, 0, 0, cmyk_scale
+
+    # rgb [0,255] -> cmy [0,1]
+    c = 1 - r / float(rgb_scale)
+    m = 1 - g / float(rgb_scale)
+    y = 1 - b / float(rgb_scale)
+
+    # extract out k [0,1]
+    min_cmy = min(c, m, y)
+    c = (c - min_cmy)
+    m = (m - min_cmy)
+    y = (y - min_cmy)
+    k = min_cmy
+
+    # rescale to the range [0,cmyk_scale]
+    return c * cmyk_scale, m * cmyk_scale, y * cmyk_scale, k * cmyk_scale
+
+config = dataIO.load_json("data/SelfBot/config.json")
 
 
 class Custom:
     def __init__(self, bot):
         self.bot = bot
+
+    @commands.command(pass_context=True)
+    async def signed(self, ctx, *, message: str):
+        """Says something with embedded signature
+
+        Text changeable in config.json"""
+        em = discord.Embed(title=config["signature_title"], description=config["signature_desc"],
+                           url=config["signature_url"], colour=config["signature_colour"],
+                           timestamp=ctx.message.timestamp)
+        em.add_field(name=config["signature_field_name"], value=config["signature_field_content"], inline=False)
+        em.set_footer(text=ctx.message.author.nick or ctx.message.author.name, icon_url=ctx.message.author.avatar_url)
+        await self.bot.say(message, embed=em)
+        await self.bot.delete_message(ctx.message)
 
     @commands.command(pass_context=True)
     async def embed(self, ctx, *, message: str):
@@ -175,7 +249,7 @@ class Custom:
 
         Defaults to coin.
         """
-        if user != None:
+        if user is not None:
             msg = ""
             char = "abcdefghijklmnopqrstuvwxyz"
             tran = "ɐqɔpǝɟƃɥᴉɾʞlɯuodbɹsʇnʌʍxʎz"
@@ -229,12 +303,12 @@ class Custom:
         """Shows some info about provided HEX color"""
         pattern = re.compile("^#([A-Fa-f0-9]{6})$")
         if pattern.match(color):
-            colorrgb = self.hex_to_rgb(color)
-            colorint = self.getIfromRGB(colorrgb)
+            colorrgb = hex_to_rgb(color)
+            colorint = get_int_from_rgb(colorrgb)
             colorhsv = colorsys.rgb_to_hsv(colorrgb[0], colorrgb[1], colorrgb[2])
             colorhls = colorsys.rgb_to_hls(colorrgb[0], colorrgb[1], colorrgb[2])
             coloryiq = colorsys.rgb_to_yiq(colorrgb[0], colorrgb[1], colorrgb[2])
-            colorcmyk = self.rgb_to_cmyk(colorrgb[0], colorrgb[1], colorrgb[2])
+            colorcmyk = rgb_to_cmyk(colorrgb[0], colorrgb[1], colorrgb[2])
             em = discord.Embed(title=str(color),
                                description="Provided HEX: " + color + "\nRGB: " + str(colorrgb) + "\nCMYK: " + str(
                                    colorcmyk) + "\nHSV: " + str(colorhsv) + "\nHLS: " + str(colorhls) + "\nYIQ: " + str(
@@ -250,58 +324,6 @@ class Custom:
                 "acceptable color HEX: `#1A2B3C`".format(
                     color))
         await self.bot.delete_message(ctx.message)
-
-    def rgb_to_cmyk(self, r, g, b):
-        rgb_scale = 255
-        cmyk_scale = 100
-        if (r == 0) and (g == 0) and (b == 0):
-            # black
-            return 0, 0, 0, cmyk_scale
-
-        # rgb [0,255] -> cmy [0,1]
-        c = 1 - r / float(rgb_scale)
-        m = 1 - g / float(rgb_scale)
-        y = 1 - b / float(rgb_scale)
-
-        # extract out k [0,1]
-        min_cmy = min(c, m, y)
-        c = (c - min_cmy)
-        m = (m - min_cmy)
-        y = (y - min_cmy)
-        k = min_cmy
-
-        # rescale to the range [0,cmyk_scale]
-        return c * cmyk_scale, m * cmyk_scale, y * cmyk_scale, k * cmyk_scale
-
-    def cmyk_to_rgb(self, c, m, y, k):
-        rgb_scale = 255
-        cmyk_scale = 100
-        """
-        """
-        r = rgb_scale * (1.0 - (c + k) / float(cmyk_scale))
-        g = rgb_scale * (1.0 - (m + k) / float(cmyk_scale))
-        b = rgb_scale * (1.0 - (y + k) / float(cmyk_scale))
-        return r, g, b
-
-    def getRGBfromI(self, RGBint):
-        blue = RGBint & 255
-        green = (RGBint >> 8) & 255
-        red = (RGBint >> 16) & 255
-        return red, green, blue
-
-    def getIfromRGB(self, rgb):
-        red = rgb[0]
-        green = rgb[1]
-        blue = rgb[2]
-        RGBint = (red << 16) + (green << 8) + blue
-        return RGBint
-
-    def hex_to_rgb(self, hex_string):
-        rgb = colors.hex2color(hex_string)
-        return tuple([int(255 * x) for x in rgb])
-
-    def rgb_to_hex(self, rgb_tuple):
-        return colors.rgb2hex([1.0 * x / 255 for x in rgb_tuple])
 
 
 def setup(bot):

@@ -3,7 +3,7 @@ import json
 
 from discord.ext import commands
 
-tag_location = "tags.json"
+tag_location = "data/SelfBot/tags.json"
 
 
 class Tags:

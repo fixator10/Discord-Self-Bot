@@ -16,14 +16,12 @@ initial_extensions = [
     'eval'
 ]
 
+config = dataIO.load_json("data/SelfBot/config.json")
+
 # Set's bot's description and prefixes in a list
-description = "FG17: Discord Selfbot"
-bot = commands.Bot(command_prefix=["self."], description=description, self_bot=True)
+description = config["description"]
+bot = commands.Bot(command_prefix=[config["prefix"]], description=description, self_bot=True)
 
-
-# # load bot config
-# with open("config/config.json") as f:
-#     bot.config = json.load(f)
 
 ########################################################################################################################
 
@@ -156,9 +154,9 @@ async def resetnicks(ctx):
 
 if __name__ == "__main__":
 
-    if os.path.exists("self_token.json"):
-        userinfo = dataIO.load_json("self_token.json")
+    if os.path.exists("data/SelfBot/self_token.json"):
+        userinfo = dataIO.load_json("data/SelfBot/self_token.json")
         bot.run(userinfo["token"], bot=False)
-    if os.path.exists("self_password.json"):
-        userinfo = dataIO.load_json("self_password.json")
+    if os.path.exists("data/SelfBot/self_password.json"):
+        userinfo = dataIO.load_json("data/SelfBot/self_password.json")
         bot.run(userinfo["login"], userinfo["password"], bot=False)

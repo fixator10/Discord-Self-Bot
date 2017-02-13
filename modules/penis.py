@@ -2,6 +2,7 @@ import discord
 import random
 from discord.ext import commands
 
+
 class Penis:
     """Penis related commands."""
 
@@ -9,7 +10,7 @@ class Penis:
         self.bot = bot
 
     @commands.command()
-    async def penis(self, *, user : discord.Member):
+    async def penis(self, *, user: discord.Member):
         """Detects user's penis length
 
         This is 100% accurate."""

@@ -1,8 +1,8 @@
 import discord
 from discord.ext import commands
-import json
 
-class Admin():
+
+class Admin:
     def __init__(self, bot):
         self.bot = bot
 
@@ -24,6 +24,7 @@ class Admin():
         server = ctx.message.server
         invite = await self.bot.create_invite(server)
         await self.bot.say(invite.url)
+
 
 def setup(bot):
     bot.add_cog(Admin(bot))
