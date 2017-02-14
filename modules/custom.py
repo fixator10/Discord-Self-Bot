@@ -264,7 +264,7 @@ class Custom:
             await self.bot.say("*flips a coin and... " + random.choice(["HEADS!*", "TAILS!*"]))
         await self.bot.delete_message(ctx.message)
 
-    @commands.command(pass_context=True, no_pm=True, name='thetime')
+    @commands.command(pass_context=True, name='thetime')
     async def _thetime(self, ctx):
         """Send your current time"""
         await self.bot.say(datetime.datetime.now().strftime('%d.%m.%Y %H:%M:%S %Z'))
