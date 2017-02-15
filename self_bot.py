@@ -15,7 +15,7 @@ initial_extensions = [
     'penis',
     'eval'
 ]
-version = "F10.0.0.17"
+version = "F10.0.0.18"
 
 config = dataIO.load_json("data/SelfBot/config.json")
 

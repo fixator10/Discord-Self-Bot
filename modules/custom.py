@@ -4,6 +4,7 @@ import datetime
 import random
 import re
 import time
+from yandex_translate import YandexTranslate
 
 import discord
 import matplotlib.colors as colors
@@ -68,7 +69,10 @@ def rgb_to_cmyk(r, g, b):
     # rescale to the range [0,cmyk_scale]
     return c * cmyk_scale, m * cmyk_scale, y * cmyk_scale, k * cmyk_scale
 
+
 config = dataIO.load_json("data/SelfBot/config.json")
+
+translate = YandexTranslate(config["yandex_translate_API_key"])
 
 
 class Custom:
@@ -97,6 +101,41 @@ class Custom:
         message = message.strip("` ")
         em = discord.Embed(description=message, colour=ctx.message.author.colour)
         await self.bot.say(embed=em)
+        await self.bot.delete_message(ctx.message)
+
+    @commands.command(pass_context=True)
+    async def translate(self, ctx, language: str, *, text: str):
+        """Translate text
+
+        Language may be just "ru" (target language to translate)
+        or "en-ru" (original text's language - target language)"""
+        text = text.strip("`")  # To avoid code blocks formatting failures
+        try:
+            response = translate.translate(text, language)
+        except Exception as e:
+            if str(e) == "ERR_LANG_NOT_SUPPORTED":
+                await self.bot.say("An error has been occurred: Language `" + language + "` is not supported")
+            elif str(e) == "ERR_TEXT_TOO_LONG":
+                # Discord will return BAD REQUEST (400) sooner than this happen, but whatever...
+                await self.bot.say("An error has been occurred: Text that you provided is too big to translate")
+            elif str(e) == "ERR_KEY_INVALID":
+                await self.bot.say("<https://translate.yandex.ru/apikeys>\n"
+                                   "Setup your API key in `data/SelfBot/config.json`\n"
+                                   "And reload module with `self.reload custom`")
+            elif str(e) == "ERR_UNPROCESSABLE_TEXT":
+                await self.bot.say("An error has been occurred: Provided text \n```\n"+text+"``` is unprocessable by "
+                                                                                            "translation server")
+            elif str(e) == "ERR_SERVICE_NOT_AVAIBLE":
+                await self.bot.say("An error has been occurred: Service Unavailable. Try again later")
+            else:
+                await self.bot.say("An error has been occurred: " + str(e))
+            await self.bot.delete_message(ctx.message)
+            return
+        if response["code"] == 200:
+            await self.bot.say("**Input:** ```\n" + text + "``` ")
+            await self.bot.say("**Translation:** ```\n" + response["text"][0] + "```")
+        else:
+            await self.bot.say("An error has been occurred. Translation server returned code `"+response["code"]+"`")
         await self.bot.delete_message(ctx.message)
 
     @commands.command(pass_context=True)
@@ -224,6 +263,7 @@ class Custom:
         await self.bot.say(embed=em)
         await self.bot.delete_message(ctx.message)
 
+    # noinspection PyUnboundLocalVariable
     @commands.command(pass_context=True)
     async def hug(self, ctx, user: discord.Member, intensity: int = 1):
         """Because everyone likes hugs
@@ -270,6 +310,7 @@ class Custom:
         await self.bot.say(datetime.datetime.now().strftime('%d.%m.%Y %H:%M:%S %Z'))
         await self.bot.delete_message(ctx.message)
 
+    # noinspection PyPep8
     @commands.command(pass_context=True)
     async def emojify(self, ctx, *, message: str):
         """emojify text"""

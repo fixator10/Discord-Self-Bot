@@ -1,6 +1,8 @@
 {
   "prefix": "self.",
   "description": "FG17: Discord SelfBot",
+  
+  "yandex_translate_API_key": "Your API Key from https://translate.yandex.ru/apikeys",
 
   "signature_title": "Username",
   "signature_desc": "From Selfbot",
