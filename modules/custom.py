@@ -135,6 +135,7 @@ class Custom:
             await self.bot.say("**Input:** ```\n" + text + "``` ")
             await self.bot.say("**Translation:** ```\n" + response["text"][0] + "```")
         else:
+            # According to yandex.translate source code this cannot happen too, but whatever...
             await self.bot.say("An error has been occurred. Translation server returned code `"+response["code"]+"`")
         await self.bot.delete_message(ctx.message)
 
@@ -212,7 +213,7 @@ class Custom:
         em.add_field(name="Type", value=str(channel.type).replace("voice", "🔈").replace("text", "📰"))
         em.add_field(name="Has existed since", value=channel.created_at.strftime('%d.%m.%Y %H:%M:%S %Z'))
         em.add_field(name="Position", value=channel.position)
-        em.add_field(name="Changed roles permissions", value="\n".join([str(x) for x in changed_roles]))
+        em.add_field(name="Changed roles permissions", value="\n".join([str(x) for x in changed_roles]) or "`Not set`")
         em.add_field(name="Mention", value=channel.mention + "\n`" + channel.mention + "`")
         await self.bot.say(embed=em)
         await self.bot.delete_message(ctx.message)
