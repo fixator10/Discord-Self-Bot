@@ -1,3 +1,3 @@
 @Echo off
 echo "Checking requirements"
-pip install -r requirements.txt
+pip install --upgrade --target libs -r requirements.txt
