@@ -70,6 +70,10 @@ def rgb_to_cmyk(r, g, b):
     return c * cmyk_scale, m * cmyk_scale, y * cmyk_scale, k * cmyk_scale
 
 
+def embeds_allowed(message):
+    return message.channel.permissions_for(message.author).embed_links
+
+
 config = dataIO.load_json("data/SelfBot/config.json")
 
 translate = YandexTranslate(config["yandex_translate_API_key"])
@@ -84,6 +88,10 @@ class Custom:
         """Says something with embedded signature
 
         Text changeable in config.json"""
+        if not embeds_allowed(ctx.message):
+            await self.bot.say("Not allowed to send embeds here. Lack `Embed Links` permission")
+            await self.bot.delete_message(ctx.message)
+            return
         em = discord.Embed(title=config["signature_title"], description=config["signature_desc"],
                            url=config["signature_url"], colour=config["signature_colour"],
                            timestamp=ctx.message.timestamp)
@@ -98,6 +106,10 @@ class Custom:
         Useful for using emojis on any server without Nitro
         
         Inline code markdown at start and at end of message will be removed"""
+        if not embeds_allowed(ctx.message):
+            await self.bot.say("Not allowed to send embeds here. Lack `Embed Links` permission")
+            await self.bot.delete_message(ctx.message)
+            return
         message = message.strip("` ")
         em = discord.Embed(description=message, colour=ctx.message.author.colour)
         await self.bot.say(embed=em)
@@ -159,7 +171,11 @@ class Custom:
             if attachment is not None:
                 attachment = dict(attachment)
                 em.set_image(url=attachment['url'])
-            await self.bot.say(response, embed=em)
+            if embeds_allowed(ctx.message):
+                await self.bot.say(response, embed=em)
+            else:
+                await self.bot.say((response or "")+"\n\n**Quote from "+message.author.name+"#" +
+                                   message.author.discriminator+":**\n```\n"+message.content+"```")
         await self.bot.delete_message(ctx.message)
 
     @commands.command(pass_context=True, no_pm=True, aliases=['roleinfo'])
@@ -179,7 +195,20 @@ class Custom:
         em.add_field(name="Mention", value=role.mention + "\n`" + role.mention + "`")
         em.set_thumbnail(url="https://xenforo.com/community/rgba.php?r=" + str(role.colour.r) + "&g=" + str(
             role.colour.g) + "&b=" + str(role.colour.b) + "&a=255")
-        await self.bot.say(embed=em)
+        if embeds_allowed(ctx.message):
+            await self.bot.say(embed=em)
+        else:
+            await self.bot.say("```\n" +
+                               "ID: "+role.id +
+                               "\nPerms: "+str(role.permissions.value) +
+                               "\nHas existed since: "+role.created_at.strftime('%d.%m.%Y %H:%M:%S %Z') +
+                               "\nHoist: "+str(role.hoist).replace("True", "✔").replace("False", "❌") +
+                               "\nPosition: "+str(role.position) +
+                               "\nColor: "+str(rgb_to_hex(get_rgb_from_int(role.colour.value))) +
+                               "\nManaged: "+str(role.managed).replace("True", "✔").replace("False", "❌") +
+                               "\nMentionable: "+str(role.mentionable).replace("True", "✔").replace("False", "❌") +
+                               "\nMention: "+str(role.mention) +
+                               "```")
         await self.bot.delete_message(ctx.message)
 
     @commands.command(pass_context=True, no_pm=True, aliases=['listroles', 'rolelist'])
@@ -199,7 +228,11 @@ class Custom:
         em = discord.Embed(title="List of roles", description="\n".join([str(x) for x in roles]),
                            colour=random.randint(0, 16777215))
         em.set_footer(text="Total count of roles: " + str(len(server.roles)))
-        await self.bot.say(embed=em)
+        if embeds_allowed(ctx.message):
+            await self.bot.say(embed=em)
+        else:
+            await self.bot.say("**List of roles:**\n```"+"\n".join([str(x) for x in roles]) +
+                               "```\nTotal count: "+str(len(server.roles)))
         await self.bot.delete_message(ctx.message)
 
     @commands.command(pass_context=True, no_pm=True, aliases=['channelinfo', 'chaninfo', 'chan'])
@@ -215,7 +248,17 @@ class Custom:
         em.add_field(name="Position", value=channel.position)
         em.add_field(name="Changed roles permissions", value="\n".join([str(x) for x in changed_roles]) or "`Not set`")
         em.add_field(name="Mention", value=channel.mention + "\n`" + channel.mention + "`")
-        await self.bot.say(embed=em)
+        if embeds_allowed(ctx.message):
+            await self.bot.say(embed=em)
+        else:
+            await self.bot.say("```\n" +
+                               "ID: "+channel.id +
+                               "\nType: "+channel.type.name +
+                               "\nHas existed since: "+channel.created_at.strftime('%d.%m.%Y %H:%M:%S %Z') +
+                               "\nPosition: "+str(channel.position) +
+                               "\nChanged roles permissions: "+"\n".join([str(x) for x in changed_roles]) +
+                               "\nMention: "+channel.mention +
+                               "```")
         await self.bot.delete_message(ctx.message)
 
     @commands.command(pass_context=True, no_pm=True, aliases=['channellist', 'listchannels'])
@@ -236,12 +279,19 @@ class Custom:
                 vchans.append(elem.name)
             elif str(elem.type) == "text":
                 tchans.append(elem.name)
-        em = discord.Embed(title="Text channels:", description="\n".join([str(x) for x in tchans]),
-                           colour=random.randint(0, 16777215))
+        em = discord.Embed(title="Channels list", colour=random.randint(0, 16777215))
+        em.add_field(name="Text channels:", value="\n".join([str(x) for x in tchans]), inline=False)
         em.add_field(name="Voice channels:", value="\n".join([str(x) for x in vchans]), inline=False)
-        em.set_footer(text="Total count of channels: " + str(len(server.channels)) + " | Voice Channels: " + str(
-            len(vchans)) + " | Text Channels: " + str(len(tchans)))
-        await self.bot.say(embed=em)
+        em.set_footer(text="Total count of channels: " + str(len(server.channels)) +
+                           " | Text Channels: " + str(len(tchans))+" | Voice Channels: " + str(len(vchans)))
+        if embeds_allowed(ctx.message):
+            await self.bot.say(embed=em)
+        else:
+            await self.bot.say("**Text channels:**\n```"+"\n".join([str(x) for x in tchans]) +
+                               "```**Voice channels:**\n```"+"\n".join([str(x) for x in vchans]) +
+                               "```\nTotal count: "+str(len(server.channels)) +
+                               " | Text Channels: " + str(len(tchans)) +
+                               " | Voice Channels: " + str(len(vchans)))
         await self.bot.delete_message(ctx.message)
 
     @commands.command(pass_context=True, no_pm=True, aliases=['emojiinfo', 'emojinfo'])
@@ -261,7 +311,19 @@ class Custom:
         if len(allowed_roles) > 0:
             em.add_field(name="Roles", value="\n".join([str(x) for x in allowed_roles]))
         em.set_image(url=emoji.url)
-        await self.bot.say(embed=em)
+        if embeds_allowed(ctx.message):
+            await self.bot.say(embed=em)
+        else:
+            await self.bot.say("```\n" +
+                               "ID: "+emoji.id +
+                               "\nHas existed since: "+emoji.created_at.strftime('%d.%m.%Y %H:%M:%S %Z') +
+                               "\n\":\" required: "+str(emoji.require_colons)
+                               .replace("True", "✔").replace("False", "❌") +
+                               "\nManaged: "+str(emoji.managed).replace("True", "✔").replace("False", "❌") +
+                               "\nServer: "+str(emoji.server) +
+                               "\nRoles: "+"\n".join([str(x) for x in allowed_roles]) +
+                               "```" +
+                               emoji.url)
         await self.bot.delete_message(ctx.message)
 
     # noinspection PyUnboundLocalVariable
@@ -359,12 +421,22 @@ class Custom:
                                timestamp=ctx.message.timestamp)
             em.set_thumbnail(url="https://xenforo.com/community/rgba.php?r=" + str(colorrgb[0]) + "&g=" + str(
                 colorrgb[1]) + "&b=" + str(colorrgb[2]) + "&a=255")
-            await self.bot.say(embed=em)
+            if embeds_allowed(ctx.message):
+                await self.bot.say(embed=em)
+            else:
+                await self.bot.say("```\n" +
+                                   "Provided HEX: "+color +
+                                   "\nRGB: "+str(colorrgb) +
+                                   "\nCMYK: "+str(colorcmyk) +
+                                   "\nHSV: "+str(colorhsv) +
+                                   "\nHLS: "+str(colorhls) +
+                                   "\nYIQ: "+str(coloryiq) +
+                                   "\nint: "+str(colorint) +
+                                   "```")
         else:
             await self.bot.say(
                 "Looks like the `{}`, that you provided is not color HEX\nOr it is too small/too big.\nExample of "
-                "acceptable color HEX: `#1A2B3C`".format(
-                    color))
+                "acceptable color HEX: `#1A2B3C`".format(color))
         await self.bot.delete_message(ctx.message)
 
 

@@ -2,6 +2,10 @@ import discord
 from discord.ext import commands
 
 
+def embeds_allowed(message):
+    return message.channel.permissions_for(message.author).embed_links
+
+
 class Moderation:
     def __init__(self, bot):
         self.bot = bot
@@ -68,7 +72,20 @@ class Moderation:
         em.set_image(url=member.avatar_url)
         em.set_thumbnail(url="https://xenforo.com/community/rgba.php?r=" + str(member.colour.r) + "&g=" + str(
             member.colour.g) + "&b=" + str(member.colour.b) + "&a=255")
-        await self.bot.say(embed=em)
+        if embeds_allowed(ctx.message):
+            await self.bot.say(embed=em)
+        else:
+            await self.bot.say("```\n" +
+                               "Name: "+member.name +
+                               "\nJoined server: "+member.joined_at.strftime('%d.%m.%Y %H:%M:%S %Z') +
+                               "\nID: "+member.id +
+                               "\nHas existed since: "+member.created_at.strftime('%d.%m.%Y %H:%M:%S %Z') +
+                               "\nColor: "+str(member.color) +
+                               "\nBot?: "+str(member.bot).replace("True", "✔").replace("False", "❌") +
+                               "\nServer perms: "+str(member.server_permissions.value) +
+                               "\nRoles: "+"\n".join([str(x) for x in rolelist]) +
+                               "```\n" +
+                               member.avatar_url)
         await self.bot.delete_message(ctx.message)
 
     # Server Info
@@ -110,7 +127,29 @@ class Moderation:
         else:
             em.add_field(name="Invite Splash", value="✔ [🔗](" + server.splash_url + ")")
         em.set_image(url=server.icon_url)
-        await self.bot.say(embed=em)
+        if embeds_allowed(ctx.message):
+            await self.bot.say(embed=em)
+        else:
+            await self.bot.say("```\n" +
+                               "Name: "+server.name +
+                               "\nServer ID: "+server.id +
+                               "\nRegion: "+str(server.region) +
+                               "\nExisted since: "+server.created_at.strftime('%d.%m.%Y %H:%M:%S %Z') +
+                               "\nOwner: "+str(server.owner) +
+                               "\nAFK timeout and Channel: "+str(afk) + " min in " + str(server.afk_channel) +
+                               "\nVerification level: " +
+                               str(server.verification_level).replace("none", "None").replace("low", "Low")
+                               .replace("medium", "Medium").replace("high", "(╯°□°）╯︵ ┻━┻") +
+                               "\n2FA admins: "+str(server.mfa_level).replace("0", "❌").replace("1", "✔") +
+                               "\nMember Count: "+str(server.member_count) +
+                               "\nRole Count: "+str(len(server.roles)) +
+                               "\nChannel Count: "+str(len(server.channels)) +
+                               "\nVIP Voice Regions: "+vip_regs +
+                               "\nVanity URL: "+van_url +
+                               "\nInvite Splash: "+str(inv_splash).replace("True", "✔").replace("False", "❌") +
+                               "\nInvite Splash URL: "+server.splash_url +
+                               "```\n" +
+                               server.icon_url)
         await self.bot.delete_message(ctx.message)
 
 
