@@ -119,7 +119,11 @@ class Custom:
             await self.bot.delete_message(ctx.message)
             return
         message = re.sub(r'^\s*(`\s*)?|(\s*`)?\s*$', '', message)
-        em = discord.Embed(description=message, colour=ctx.message.author.colour)
+        if ctx.message.server:
+            em_color = ctx.message.author.colour
+        else:
+            em_color = discord.Colour.default()
+        em = discord.Embed(description=message, colour=em_color)
         await self.bot.say(embed=em)
         await self.bot.delete_message(ctx.message)
 
