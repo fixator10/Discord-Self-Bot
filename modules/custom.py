@@ -118,7 +118,7 @@ class Custom:
             await self.bot.say("Not allowed to send embeds here. Lack `Embed Links` permission")
             await self.bot.delete_message(ctx.message)
             return
-        message = message.strip("` ")
+        message = re.sub(r'^\s*(`\s*)?|(\s*`)?\s*$', '', message)
         em = discord.Embed(description=message, colour=ctx.message.author.colour)
         await self.bot.say(embed=em)
         await self.bot.delete_message(ctx.message)
