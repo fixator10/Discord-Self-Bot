@@ -4,6 +4,7 @@ import datetime
 import random
 import re
 import time
+import itertools
 from yandex_translate import YandexTranslate
 
 import discord
@@ -68,6 +69,13 @@ def rgb_to_cmyk(r, g, b):
 
     # rescale to the range [0,cmyk_scale]
     return c * cmyk_scale, m * cmyk_scale, y * cmyk_scale, k * cmyk_scale
+
+
+def squeeze(chars, s):
+    for char in chars:
+        while char*2 in s:
+            s = s.replace(char*2, char)
+        return s
 
 
 def embeds_allowed(message):
@@ -135,8 +143,9 @@ class Custom:
                                    "Setup your API key in `data/SelfBot/config.json`\n"
                                    "And reload module with `self.reload custom`")
             elif str(e) == "ERR_UNPROCESSABLE_TEXT":
-                await self.bot.say("An error has been occurred: Provided text \n```\n"+text+"``` is unprocessable by "
-                                                                                            "translation server")
+                await self.bot.say(
+                    "An error has been occurred: Provided text \n```\n" + text + "``` is unprocessable by "
+                                                                                 "translation server")
             elif str(e) == "ERR_SERVICE_NOT_AVAIBLE":
                 await self.bot.say("An error has been occurred: Service Unavailable. Try again later")
             else:
@@ -148,7 +157,26 @@ class Custom:
             await self.bot.say("**Translation:** ```\n" + response["text"][0] + "```")
         else:
             # According to yandex.translate source code this cannot happen too, but whatever...
-            await self.bot.say("An error has been occurred. Translation server returned code `"+response["code"]+"`")
+            await self.bot.say(
+                "An error has been occurred. Translation server returned code `" + response["code"] + "`")
+        await self.bot.delete_message(ctx.message)
+
+    @commands.command(pass_context=True, aliases=["ецихо"])
+    async def eciho(self, ctx, *, text: str):
+        """Translate cyrillic text to "eciho"
+        eciho - language created by Фражуз ZRZ1 СВ#9268 (255682413445906433)
+
+        This is unusable shit, i know, but whatever"""
+        char = "сзчшщжуюваёяэкгфйыъьд"
+        tran = "ццццццооооееехххииииб"
+        table = str.maketrans(char, tran)
+        text = text.translate(table)
+        char = char.upper()
+        tran = tran.upper()
+        table = str.maketrans(char, tran)
+        text = text.translate(table)
+        text = ''.join(c for c, _ in itertools.groupby(text))
+        await self.bot.say(text)
         await self.bot.delete_message(ctx.message)
 
     @commands.command(pass_context=True)
@@ -174,8 +202,8 @@ class Custom:
             if embeds_allowed(ctx.message):
                 await self.bot.say(response, embed=em)
             else:
-                await self.bot.say((response or "")+"\n\n**Quote from "+message.author.name+"#" +
-                                   message.author.discriminator+":**\n```\n"+message.content+"```")
+                await self.bot.say((response or "") + "\n\n**Quote from " + message.author.name + "#" +
+                                   message.author.discriminator + ":**\n```\n" + message.content + "```")
         await self.bot.delete_message(ctx.message)
 
     @commands.command(pass_context=True, no_pm=True, aliases=['roleinfo'])
@@ -199,15 +227,15 @@ class Custom:
             await self.bot.say(embed=em)
         else:
             await self.bot.say("```\n" +
-                               "ID: "+role.id +
-                               "\nPerms: "+str(role.permissions.value) +
-                               "\nHas existed since: "+role.created_at.strftime('%d.%m.%Y %H:%M:%S %Z') +
-                               "\nHoist: "+str(role.hoist).replace("True", "✔").replace("False", "❌") +
-                               "\nPosition: "+str(role.position) +
-                               "\nColor: "+str(rgb_to_hex(get_rgb_from_int(role.colour.value))) +
-                               "\nManaged: "+str(role.managed).replace("True", "✔").replace("False", "❌") +
-                               "\nMentionable: "+str(role.mentionable).replace("True", "✔").replace("False", "❌") +
-                               "\nMention: "+str(role.mention) +
+                               "ID: " + role.id +
+                               "\nPerms: " + str(role.permissions.value) +
+                               "\nHas existed since: " + role.created_at.strftime('%d.%m.%Y %H:%M:%S %Z') +
+                               "\nHoist: " + str(role.hoist).replace("True", "✔").replace("False", "❌") +
+                               "\nPosition: " + str(role.position) +
+                               "\nColor: " + str(rgb_to_hex(get_rgb_from_int(role.colour.value))) +
+                               "\nManaged: " + str(role.managed).replace("True", "✔").replace("False", "❌") +
+                               "\nMentionable: " + str(role.mentionable).replace("True", "✔").replace("False", "❌") +
+                               "\nMention: " + str(role.mention) +
                                "```")
         await self.bot.delete_message(ctx.message)
 
@@ -231,8 +259,8 @@ class Custom:
         if embeds_allowed(ctx.message):
             await self.bot.say(embed=em)
         else:
-            await self.bot.say("**List of roles:**\n```"+"\n".join([str(x) for x in roles]) +
-                               "```\nTotal count: "+str(len(server.roles)))
+            await self.bot.say("**List of roles:**\n```" + "\n".join([str(x) for x in roles]) +
+                               "```\nTotal count: " + str(len(server.roles)))
         await self.bot.delete_message(ctx.message)
 
     @commands.command(pass_context=True, no_pm=True, aliases=['channelinfo', 'chaninfo', 'chan'])
@@ -252,12 +280,14 @@ class Custom:
             await self.bot.say(embed=em)
         else:
             await self.bot.say("```\n" +
-                               "ID: "+channel.id +
-                               "\nType: "+channel.type.name +
-                               "\nHas existed since: "+channel.created_at.strftime('%d.%m.%Y %H:%M:%S %Z') +
-                               "\nPosition: "+str(channel.position) +
-                               "\nChanged roles permissions: "+"\n".join([str(x) for x in changed_roles]) +
-                               "\nMention: "+channel.mention +
+                               "Name: " + channel.name +
+                               "\nTopic: " + channel.topic +
+                               "\nID: " + channel.id +
+                               "\nType: " + channel.type.name +
+                               "\nHas existed since: " + channel.created_at.strftime('%d.%m.%Y %H:%M:%S %Z') +
+                               "\nPosition: " + str(channel.position) +
+                               "\nChanged roles permissions: " + "\n".join([str(x) for x in changed_roles]) +
+                               "\nMention: " + channel.mention +
                                "```")
         await self.bot.delete_message(ctx.message)
 
@@ -283,13 +313,13 @@ class Custom:
         em.add_field(name="Text channels:", value="\n".join([str(x) for x in tchans]), inline=False)
         em.add_field(name="Voice channels:", value="\n".join([str(x) for x in vchans]), inline=False)
         em.set_footer(text="Total count of channels: " + str(len(server.channels)) +
-                           " | Text Channels: " + str(len(tchans))+" | Voice Channels: " + str(len(vchans)))
+                           " | Text Channels: " + str(len(tchans)) + " | Voice Channels: " + str(len(vchans)))
         if embeds_allowed(ctx.message):
             await self.bot.say(embed=em)
         else:
-            await self.bot.say("**Text channels:**\n```"+"\n".join([str(x) for x in tchans]) +
-                               "```**Voice channels:**\n```"+"\n".join([str(x) for x in vchans]) +
-                               "```\nTotal count: "+str(len(server.channels)) +
+            await self.bot.say("**Text channels:**\n```" + "\n".join([str(x) for x in tchans]) +
+                               "```**Voice channels:**\n```" + "\n".join([str(x) for x in vchans]) +
+                               "```\nTotal count: " + str(len(server.channels)) +
                                " | Text Channels: " + str(len(tchans)) +
                                " | Voice Channels: " + str(len(vchans)))
         await self.bot.delete_message(ctx.message)
@@ -315,13 +345,13 @@ class Custom:
             await self.bot.say(embed=em)
         else:
             await self.bot.say("```\n" +
-                               "ID: "+emoji.id +
-                               "\nHas existed since: "+emoji.created_at.strftime('%d.%m.%Y %H:%M:%S %Z') +
-                               "\n\":\" required: "+str(emoji.require_colons)
+                               "ID: " + emoji.id +
+                               "\nHas existed since: " + emoji.created_at.strftime('%d.%m.%Y %H:%M:%S %Z') +
+                               "\n\":\" required: " + str(emoji.require_colons)
                                .replace("True", "✔").replace("False", "❌") +
-                               "\nManaged: "+str(emoji.managed).replace("True", "✔").replace("False", "❌") +
-                               "\nServer: "+str(emoji.server) +
-                               "\nRoles: "+"\n".join([str(x) for x in allowed_roles]) +
+                               "\nManaged: " + str(emoji.managed).replace("True", "✔").replace("False", "❌") +
+                               "\nServer: " + str(emoji.server) +
+                               "\nRoles: " + "\n".join([str(x) for x in allowed_roles]) +
                                "```" +
                                emoji.url)
         await self.bot.delete_message(ctx.message)
@@ -425,13 +455,13 @@ class Custom:
                 await self.bot.say(embed=em)
             else:
                 await self.bot.say("```\n" +
-                                   "Provided HEX: "+color +
-                                   "\nRGB: "+str(colorrgb) +
-                                   "\nCMYK: "+str(colorcmyk) +
-                                   "\nHSV: "+str(colorhsv) +
-                                   "\nHLS: "+str(colorhls) +
-                                   "\nYIQ: "+str(coloryiq) +
-                                   "\nint: "+str(colorint) +
+                                   "Provided HEX: " + color +
+                                   "\nRGB: " + str(colorrgb) +
+                                   "\nCMYK: " + str(colorcmyk) +
+                                   "\nHSV: " + str(colorhsv) +
+                                   "\nHLS: " + str(colorhls) +
+                                   "\nYIQ: " + str(coloryiq) +
+                                   "\nint: " + str(colorint) +
                                    "```")
         else:
             await self.bot.say(
