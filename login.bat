@@ -12,7 +12,7 @@ echo INVALID INPUT
 goto ask_for_input
 
 :set_token
-del %~dp0\data\SelfBot\self_password.json >nul 2>nul
+del %~dp0\data\SelfBot\self_token.json >nul 2>nul
 echo Press Ctrl+Shift+I in your Discord client or on the Discordapp page in your browser.
 echo Then go to Application ^> Local Storage ^> http://discordapp.com ^> copy Value of token key
 echo Enter your token:
@@ -21,7 +21,7 @@ echo { "token": "%token%" } >> %~dp0\data\SelfBot\self_token.json
 goto start_bot
 
 :set_password
-del %~dp0\data\SelfBot\self_token.json >nul 2>nul
+del %~dp0\data\SelfBot\self_password.json >nul 2>nul
 echo Enter your login:
 set /p login=
 echo Enter your password:
