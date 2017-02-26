@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
-
 import inspect
 import os
 import sys
+
+REQS_DIR = "libs"
+sys.path.insert(0, REQS_DIR)
 
 import discord
 from discord.ext import commands
 
 from modules.utils.dataIO import dataIO
-
-REQS_DIR = "libs"
-sys.path.insert(0, REQS_DIR)
 
 initial_extensions = [
     'admin',
@@ -22,7 +21,7 @@ initial_extensions = [
     'penis',
     'eval'
 ]
-version = "F10.0.0.22"
+version = "F10.0.0.23"
 
 config = dataIO.load_json("data/SelfBot/config.json")
 
