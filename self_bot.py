@@ -21,12 +21,12 @@ initial_extensions = [
     'penis',
     'eval'
 ]
-version = "F10.0.0.23"
+version = "F10.0.0.24"
 
 config = dataIO.load_json("data/SelfBot/config.json")
 
 # Set's bot's description and prefixes in a list
-description = config["description"]+"\n"+"Version: \""+version+"\""
+description = config["description"] + "\n" + "Version: \"" + version + "\""
 bot = commands.Bot(command_prefix=[config["prefix"]], description=description, self_bot=True)
 
 

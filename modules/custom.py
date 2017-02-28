@@ -167,7 +167,7 @@ class Custom:
 
     @commands.command(pass_context=True, aliases=["ецихо"])
     async def eciho(self, ctx, *, text: str):
-        """Translate cyrillic text to "eciho"
+        """Translate text (cyrillic/latin) to "eciho"
         eciho - language created by Фражуз ZRZ1 СВ#9268 (255682413445906433)
 
         This is unusable shit, i know, but whatever"""
@@ -180,6 +180,14 @@ class Custom:
         table = str.maketrans(char, tran)
         text = text.translate(table)
         text = ''.join(c for c, _ in itertools.groupby(text))
+        char = "uavwjyqkhfxdzs"
+        tran = "ooooiigggggbcc"
+        table = str.maketrans(char, tran)
+        text = text.translate(table)
+        char = char.upper()
+        tran = tran.upper()
+        table = str.maketrans(char, tran)
+        text = text.translate(table)
         await self.bot.say(text)
         await self.bot.delete_message(ctx.message)
 
