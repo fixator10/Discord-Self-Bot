@@ -17,9 +17,9 @@ pause
 exit
 
 :check_creds
-IF EXIST %~dp0\data\SelfBot\self_token.json goto start_bot
+IF EXIST "%~dp0\data\SelfBot\self_token.json" goto start_bot
 
-IF EXIST %~dp0\data\SelfBot\self_password.json goto start_bot
+IF EXIST "%~dp0\data\SelfBot\self_password.json" goto start_bot
 
 :call_login
 call login.bat

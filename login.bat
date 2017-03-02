@@ -12,12 +12,12 @@ echo INVALID INPUT
 goto ask_for_input
 
 :set_token
-del %~dp0\data\SelfBot\self_token.json >nul 2>nul
+del "%~dp0\data\SelfBot\self_token.json" >nul 2>nul
 echo Press Ctrl+Shift+I in your Discord client or on the Discordapp page in your browser.
 echo Then go to Application ^> Local Storage ^> http://discordapp.com ^> copy Value of token key
 echo Enter your token:
 set /p token=
-echo { "token": "%token%" } >> %~dp0\data\SelfBot\self_token.json
+echo { "token": "%token%" } >> "%~dp0\data\SelfBot\self_token.json"
 goto start_bot
 
 :set_password
@@ -26,10 +26,10 @@ echo Enter your login:
 set /p login=
 echo Enter your password:
 set /p password=
-echo { >> %~dp0\data\SelfBot\self_password.json
-echo "login": "%login%", >> %~dp0\data\SelfBot\self_password.json
-echo "password": "%password%" >> %~dp0\data\SelfBot\self_password.json
-echo } >> %~dp0\data\SelfBot\self_password.json
+echo { >> "%~dp0\data\SelfBot\self_password.json"
+echo "login": "%login%", >> "%~dp0\data\SelfBot\self_password.json"
+echo "password": "%password%" >> "%~dp0\data\SelfBot\self_password.json"
+echo } >> "%~dp0\data\SelfBot\self_password.json"
 goto start_bot
 
 :start_bot
