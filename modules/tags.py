@@ -47,7 +47,7 @@ class Tags:
         """Lists the tags added
         Usage:
         self.tags"""
-        taglist = "```Tags:"
+        taglist = "```diff\nTags:"
         for x in self.tags.keys():
             taglist = "{}\n- {}".format(taglist, x)
         await self.bot.say("{0} ```".format(taglist))

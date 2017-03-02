@@ -73,8 +73,8 @@ def rgb_to_cmyk(r, g, b):
 
 def squeeze(chars, s):
     for char in chars:
-        while char*2 in s:
-            s = s.replace(char*2, char)
+        while char * 2 in s:
+            s = s.replace(char * 2, char)
         return s
 
 
@@ -92,7 +92,7 @@ class Custom:
         self.bot = bot
 
     @commands.command(pass_context=True)
-    async def signed(self, ctx, *, message: str):
+    async def signed(self, ctx, *, message: str = None):
         """Says something with embedded signature
 
         Text changeable in config.json"""

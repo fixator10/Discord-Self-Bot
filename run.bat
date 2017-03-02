@@ -28,8 +28,9 @@ goto eof
 :start_bot
 echo "Bot launched. To exit instance press Ctrl+C"
 python self_bot.py
-echo Something went wrong. Possibly just wrong credentials
-echo Press any key to reenter credentials or abort with Ctrl+C and make further investigations
+echo Something went wrong.
+echo Read information before that line and remember about issue tracker:
+echo "https://github.com/fixator10/Discord-Self-Bot/issues"
 pause
 goto :call_login
 Exit

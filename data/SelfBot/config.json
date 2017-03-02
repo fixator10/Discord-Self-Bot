@@ -1,7 +1,17 @@
 {
   "prefix": "self.",
   "description": "FG17: Discord SelfBot",
-  
+
+  "modules": [
+    "admin",
+    "moderation",
+    "tags",
+    "animelist",
+    "custom",
+    "penis",
+    "eval"
+  ],
+
   "yandex_translate_API_key": "Your API Key from https://translate.yandex.ru/apikeys",
 
   "signature_title": "Username",

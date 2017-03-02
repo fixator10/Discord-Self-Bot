@@ -21,9 +21,11 @@ initial_extensions = [
     'penis',
     'eval'
 ]
-version = "F10.0.0.24"
+version = "F10.0.0.25"
 
 config = dataIO.load_json("data/SelfBot/config.json")
+
+modules = config["modules"] or initial_extensions
 
 # Set's bot's description and prefixes in a list
 description = config["description"] + "\n" + "Version: \"" + version + "\""
@@ -42,7 +44,7 @@ async def on_ready():
     print("---------------------------")
 
     print("Modules Loaded:")
-    for extension in initial_extensions:
+    for extension in modules:
         try:
             bot.load_extension("modules." + extension)
             print("* " + extension)
@@ -163,7 +165,19 @@ if __name__ == "__main__":
 
     if os.path.exists("data/SelfBot/self_token.json"):
         userinfo = dataIO.load_json("data/SelfBot/self_token.json")
-        bot.run(userinfo["token"], bot=False)
-    if os.path.exists("data/SelfBot/self_password.json"):
+        try:
+            bot.run(userinfo["token"], bot=False)
+        except discord.LoginFailure as e:
+            print("Failed to login with token.\nLaunch login.bat and authorise again or create and fill "
+                  "self_token.json manually\n"+str(e))
+    elif os.path.exists("data/SelfBot/self_password.json"):
         userinfo = dataIO.load_json("data/SelfBot/self_password.json")
-        bot.run(userinfo["login"], userinfo["password"], bot=False)
+        try:
+            bot.run(userinfo["login"], userinfo["password"], bot=False)
+        except discord.LoginFailure as e:
+            print("Failed to login with login and pass.\nLaunch login.bat and authorise again or create and fill "
+                  "self_password.json manually\n"+str(e))
+    else:
+        print("Credentials not found.\nLaunch login.bat or create and fill up self_token.json or self_password.json "
+              "manually")
+        exit()
