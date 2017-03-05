@@ -4,6 +4,7 @@ A Discord Self bot to do helpful things
 Requires Discord.py
 
 **This version includes code from** [Twentysix26](https://github.com/Twentysix26)/[Red-DiscordBot](https://github.com/Twentysix26/Red-DiscordBot) and [cogs for it](https://twentysix26.github.io/Red-Docs/red_cog_approved_repos/)
+**Also includes [Help Formatter from anojibot](https://github.com/syn3rgize/anojibot/blob/master/myhelp.py)**
 
 #Windows Installation
 1. Install [Python](https://www.python.org/downloads/) (recommended version is [3.5](https://www.python.org/downloads/))

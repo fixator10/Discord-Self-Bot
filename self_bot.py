@@ -10,6 +10,7 @@ sys.path.insert(0, REQS_DIR)
 import discord
 from discord.ext import commands
 
+import modules.utils.anojibothelp as helpformat
 from modules.utils.dataIO import dataIO
 
 initial_extensions = [
@@ -21,15 +22,17 @@ initial_extensions = [
     'penis',
     'eval'
 ]
-version = "F10.0.0.25"
+version = "F10.0.0.26"
 
 config = dataIO.load_json("data/SelfBot/config.json")
 
 modules = config["modules"] or initial_extensions
 
+formatter = helpformat.CustomHelp(show_check_failure=False)
+
 # Set's bot's description and prefixes in a list
 description = config["description"] + "\n" + "Version: \"" + version + "\""
-bot = commands.Bot(command_prefix=[config["prefix"]], description=description, self_bot=True)
+bot = commands.Bot(command_prefix=[config["prefix"]], description=description, self_bot=True, formatter=formatter)
 
 
 ########################################################################################################################
