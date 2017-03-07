@@ -9,10 +9,13 @@
     "animelist",
     "custom",
     "penis",
-    "eval"
+    "eval",
+    "weather"
   ],
 
   "yandex_translate_API_key": "Your API Key from https://translate.yandex.ru/apikeys",
+  "dark_sky_api_key" : "Your API Key from https://darksky.net/dev/",
+  "hometown" : "Your city",
 
   "signature_title": "Username",
   "signature_desc": "From Selfbot",
