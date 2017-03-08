@@ -20,9 +20,10 @@ initial_extensions = [
     'animelist',
     'custom',
     'penis',
-    'eval'
+    'eval',
+    'weather'
 ]
-version = "F10.0.0.26"
+version = "F10.0.0.27"
 
 config = dataIO.load_json("data/SelfBot/config.json")
 
