@@ -14,20 +14,24 @@ import modules.utils.anojibothelp as helpformat
 from modules.utils.dataIO import dataIO
 
 initial_extensions = [
-    'admin',
-    'moderation',
-    'tags',
-    'animelist',
-    'custom',
-    'penis',
-    'eval',
-    'weather'
+    "admin",
+    "moderation",
+    "tags",
+    "animelist",
+    "generic",
+    "penis",
+    "eval",
+    "weather",
+    "namegen",
 ]
-version = "F10.0.0.27"
+version = "F10.0.0.28"
 
 config = dataIO.load_json("data/SelfBot/config.json")
 
-modules = config["modules"] or initial_extensions
+try:
+    modules = config["modules"]
+except KeyError:
+    modules = initial_extensions
 
 formatter = helpformat.CustomHelp(show_check_failure=False)
 
@@ -43,7 +47,7 @@ async def on_ready():
     # Outputs login data to console
     print("---------------------------")
     print('Logged in as')
-    print(bot.user.name)
+    print(bot.user.name+"#"+str(bot.user.discriminator))
     print(bot.user.id)
     print("---------------------------")
 
@@ -80,31 +84,34 @@ async def on_command_error(error, ctx):
 
 # Ping Pong
 # Testing the response of the bot
-@bot.command()
-async def ping():
-    """Pong. Test's responsiveness of bot"""
-    await bot.say("Pong")
+# @bot.command()
+# async def ping():
+#     """Pong. Test's responsiveness of bot"""
+#     await bot.say("Pong")
 
 
-@bot.command(name='shutdown', aliases=['off', 'close', 'захлопнись', 'выключить'])
-async def _botshutdown():
+@bot.command(pass_context=True, name='shutdown', aliases=['off', 'close', 'захлопнись', 'выключить'])
+async def _botshutdown(ctx):
     """Shuts bot down"""
+    await bot.say("SelfBot shutting down...")
+    await bot.delete_message(ctx.message)
     await bot.close()
 
 
-@bot.command()
-async def source():
+@bot.command(pass_context=True)
+async def source(ctx):
     """Source code"""
     await bot.say(
         "<@95953002774413312>'s original: <https://github.com/DiNitride/Discord-Self-Bot>\n\n<@131813999326134272>'s "
         "fork (this): https://github.com/fixator10/Discord-Self-Bot")
+    await bot.delete_message(ctx.message)
 
 
-# Invite link to the bot server
-@bot.command()
-async def server():
+@bot.command(pass_context=True, aliases=["bug", "issue"])
+async def server(ctx):
     """The bot's server, for updates or something"""
-    await bot.say("https://discord.gg/Eau7uhf")
+    await bot.say("Original bot's server: \nhttps://discord.gg/Eau7uhf\nThis fork's server: https://discord.gg/TrQRkTN")
+    await bot.delete_message(ctx.message)
 
 
 @bot.command(pass_context=True)
@@ -134,35 +141,6 @@ async def eval_(ctx, *, code: str):
     await bot.delete_message(message)
 
 
-@bot.command(pass_context=True)
-async def massnick(ctx, nickname: str):
-    """Mass nicknames everyone on the server"""
-    server = ctx.message.server
-    counter = 0
-    for user in server.members:
-        if user.nick is None:
-            nickname = "{} {}".format(nickname, user.name)
-        else:
-            nickname = "{} {}".format(nickname, user.nick)
-        try:
-            await bot.change_nickname(user, nickname)
-        except discord.HTTPException:
-            counter += 1
-            continue
-    await bot.say("Finished nicknaming server. {} nicknames could not be completed.".format(counter))
-
-
-@bot.command(pass_context=True)
-async def resetnicks(ctx):
-    server = ctx.message.server
-    for user in server.members:
-        try:
-            await bot.change_nickname(user, nickname=None)
-        except discord.HTTPException:
-            continue
-    await bot.say("Finished resetting server nicknames")
-
-
 ########################################################################################################################
 
 if __name__ == "__main__":
@@ -184,4 +162,4 @@ if __name__ == "__main__":
     else:
         print("Credentials not found.\nLaunch login.bat or create and fill up self_token.json or self_password.json "
               "manually")
-        exit()
+        exit()  # exit before that connection will throw unclosed warning

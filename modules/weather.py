@@ -62,22 +62,22 @@ class Weather:
         else:
             await self.bot.say(content)
 
-    @commands.command(pass_context=True)
-    async def time(self, ctx, place: str = None):
-        await self.bot.delete_message(ctx.message)
-        if place is None:
-            forecast = forecastio.load_forecast(self.apikey, "40.241495", "-75.283786", units="si")
-            by_hour = forecast.currently()
-            place = "Lansdale, PA"
-        else:
-            g = geocoder.google(place)
-            if len(g.latlng) == 0:
-                await self.bot.say("Cannot find a place " + place)
-                return
-            forecast = forecastio.load_forecast(self.apikey, g.latlng[0], g.latlng[1], units="si")
-            by_hour = forecast.currently()
-
-        await self.bot.say("Time in " + place + " " + by_hour.time.timetz().isoformat())
+    # @commands.command(pass_context=True)
+    # async def time(self, ctx, place: str = None):
+    #     await self.bot.delete_message(ctx.message)
+    #     if place is None:
+    #         forecast = forecastio.load_forecast(self.apikey, "40.241495", "-75.283786", units="si")
+    #         by_hour = forecast.currently()
+    #         place = "Lansdale, PA"
+    #     else:
+    #         g = geocoder.google(place)
+    #         if len(g.latlng) == 0:
+    #             await self.bot.say("Cannot find a place " + place)
+    #             return
+    #         forecast = forecastio.load_forecast(self.apikey, g.latlng[0], g.latlng[1], units="si")
+    #         by_hour = forecast.currently()
+    #
+    #     await self.bot.say("Time in " + place + " " + by_hour.time.timetz().isoformat())
 
     @commands.command(pass_context=True)
     async def forecast(self, ctx, place: str = None):

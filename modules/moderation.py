@@ -1,54 +1,15 @@
+import random
+
 import discord
 from discord.ext import commands
-
-
-def embeds_allowed(message):
-    return message.channel.permissions_for(message.author).embed_links
+import modules.utils.color_converter as cc
+import modules.utils.checks as check
 
 
 class Moderation:
     def __init__(self, bot):
         self.bot = bot
 
-    # Banning and Kicking commands
-
-    # Bans a member
-    @commands.command()
-    async def ban(self, member: discord.Member = None):
-        """Bans a member
-        User must have ban member permissions"""
-        # Are they trying to ban nobody? Are they stupid?
-        # Why do they have mod powers if they're this much of an idiot?
-        if member is None:
-            return
-        # Is the person being banned me? No we don't allow that
-        elif member.id == '95953002774413312':
-            await self.bot.say("http://i.imgur.com/BSbBniw.png")
-            return
-        # Bans the user
-        await self.bot.ban(member, delete_message_days=1)
-        # Prints to console
-
-    # Kicks a member
-    @commands.command()
-    async def kick(self, member: discord.Member = None):
-        """Kicks a member
-        User must have kick member permissions"""
-        # Same as above, are they stupid
-        if member is None:
-            return
-        # Still not allowed to kick me
-        elif member.id == '95953002774413312':
-            await self.bot.say("http://i.imgur.com/BSbBniw.png")
-            return
-        # Kicks the user
-        await self.bot.kick(member)
-        # Prints to console
-
-    # Information commands
-    # Server info and member info
-
-    # Gives the user some basic info on a user
     @commands.command(pass_context=True, no_pm=True, aliases=['memberinfo', 'meminfo', 'membinfo',
                                                               'member', 'userinfo', 'user'])
     async def info(self, ctx, member: discord.Member = None):
@@ -72,7 +33,7 @@ class Moderation:
         em.set_image(url=member.avatar_url)
         em.set_thumbnail(url="https://xenforo.com/community/rgba.php?r=" + str(member.colour.r) + "&g=" + str(
             member.colour.g) + "&b=" + str(member.colour.b) + "&a=255")
-        if embeds_allowed(ctx.message):
+        if check.embeds_allowed(ctx.message):
             await self.bot.say(embed=em)
         else:
             await self.bot.say("```\n" +
@@ -88,7 +49,6 @@ class Moderation:
                                member.avatar_url)
         await self.bot.delete_message(ctx.message)
 
-    # Server Info
     @commands.command(pass_context=True, no_pm=True, aliases=['servinfo', 'serv', 'sv'])
     async def serverinfo(self, ctx, server: str = None):
         """Shows server information"""
@@ -127,7 +87,7 @@ class Moderation:
         else:
             em.add_field(name="Invite Splash", value="✔ [🔗](" + server.splash_url + ")")
         em.set_image(url=server.icon_url)
-        if embeds_allowed(ctx.message):
+        if check.embeds_allowed(ctx.message):
             await self.bot.say(embed=em)
         else:
             await self.bot.say("```\n" +
@@ -150,6 +110,125 @@ class Moderation:
                                "\nInvite Splash URL: "+server.splash_url +
                                "```\n" +
                                server.icon_url)
+        await self.bot.delete_message(ctx.message)
+
+    @commands.command(pass_context=True, no_pm=True, aliases=['channelinfo', 'chaninfo', 'chan'])
+    async def channel(self, ctx, *, channel: discord.Channel):
+        """Get info about channel"""
+        changed_roles = []
+        for elem in channel.changed_roles:
+            changed_roles.append(elem.name)
+        em = discord.Embed(title=channel.name, description=channel.topic, colour=random.randint(0, 16777215))
+        em.add_field(name="ID", value=channel.id)
+        em.add_field(name="Type", value=str(channel.type).replace("voice", "🔈").replace("text", "📰"))
+        em.add_field(name="Has existed since", value=channel.created_at.strftime('%d.%m.%Y %H:%M:%S %Z'))
+        em.add_field(name="Position", value=channel.position)
+        em.add_field(name="Changed roles permissions",
+                     value="\n".join([str(x) for x in changed_roles]) or "`Not set`")
+        em.add_field(name="Mention", value=channel.mention + "\n`" + channel.mention + "`")
+        if check.embeds_allowed(ctx.message):
+            await self.bot.say(embed=em)
+        else:
+            await self.bot.say("```\n" +
+                               "Name: " + channel.name +
+                               "\nTopic: " + channel.topic +
+                               "\nID: " + channel.id +
+                               "\nType: " + channel.type.name +
+                               "\nHas existed since: " + channel.created_at.strftime('%d.%m.%Y %H:%M:%S %Z') +
+                               "\nPosition: " + str(channel.position) +
+                               "\nChanged roles permissions: " + "\n".join([str(x) for x in changed_roles]) +
+                               "\nMention: " + channel.mention +
+                               "```")
+        await self.bot.delete_message(ctx.message)
+
+    @commands.command(pass_context=True, no_pm=True, aliases=['channellist', 'listchannels'])
+    async def channels(self, ctx, server: str = None):
+        """Get all channels on server"""
+        if server is None:
+            server = ctx.message.server
+        else:
+            server = discord.utils.get(self.bot.servers, id=server)
+        if server is None:
+            await self.bot.say("Failed to get server with provided ID")
+            await self.bot.delete_message(ctx.message)
+            return
+        vchans = []
+        tchans = []
+        for elem in server.channels:
+            if str(elem.type) == "voice":
+                vchans.append(elem.name)
+            elif str(elem.type) == "text":
+                tchans.append(elem.name)
+        em = discord.Embed(title="Channels list", colour=random.randint(0, 16777215))
+        em.add_field(name="Text channels:", value="\n".join([str(x) for x in tchans]), inline=False)
+        em.add_field(name="Voice channels:", value="\n".join([str(x) for x in vchans]), inline=False)
+        em.set_footer(text="Total count of channels: " + str(len(server.channels)) +
+                           " | Text Channels: " + str(len(tchans)) + " | Voice Channels: " + str(len(vchans)))
+        if check.embeds_allowed(ctx.message):
+            await self.bot.say(embed=em)
+        else:
+            await self.bot.say("**Text channels:**\n```" + "\n".join([str(x) for x in tchans]) +
+                               "```**Voice channels:**\n```" + "\n".join([str(x) for x in vchans]) +
+                               "```\nTotal count: " + str(len(server.channels)) +
+                               " | Text Channels: " + str(len(tchans)) +
+                               " | Voice Channels: " + str(len(vchans)))
+        await self.bot.delete_message(ctx.message)
+
+    @commands.command(pass_context=True, no_pm=True, aliases=['roleinfo'])
+    async def role(self, ctx, *, role: discord.Role):
+        """Get info about role"""
+        em = discord.Embed(title=role.name, colour=role.colour)
+        em.add_field(name="ID", value=role.id)
+        em.add_field(name="Perms",
+                     value="[" + str(role.permissions.value) + "](https://discordapi.com/permissions.html#" + str(
+                         role.permissions.value) + ")")
+        em.add_field(name="Has existed since", value=role.created_at.strftime('%d.%m.%Y %H:%M:%S %Z'))
+        em.add_field(name="Hoist", value=str(role.hoist).replace("True", "✔").replace("False", "❌"))
+        em.add_field(name="Position", value=role.position)
+        em.add_field(name="Color", value=role.colour)
+        em.add_field(name="Managed", value=str(role.managed).replace("True", "✔").replace("False", "❌"))
+        em.add_field(name="Mentionable", value=str(role.mentionable).replace("True", "✔").replace("False", "❌"))
+        em.add_field(name="Mention", value=role.mention + "\n`" + role.mention + "`")
+        em.set_thumbnail(url="https://xenforo.com/community/rgba.php?r=" + str(role.colour.r) + "&g=" + str(
+            role.colour.g) + "&b=" + str(role.colour.b) + "&a=255")
+        if check.embeds_allowed(ctx.message):
+            await self.bot.say(embed=em)
+        else:
+            await self.bot.say("```\n" +
+                               "ID: " + role.id +
+                               "\nPerms: " + str(role.permissions.value) +
+                               "\nHas existed since: " + role.created_at.strftime('%d.%m.%Y %H:%M:%S %Z') +
+                               "\nHoist: " + str(role.hoist).replace("True", "✔").replace("False", "❌") +
+                               "\nPosition: " + str(role.position) +
+                               "\nColor: " + str(cc.rgb_to_hex(cc.get_rgb_from_int(role.colour.value))) +
+                               "\nManaged: " + str(role.managed).replace("True", "✔").replace("False", "❌") +
+                               "\nMentionable: " + str(role.mentionable).replace("True", "✔").replace("False", "❌") +
+                               "\nMention: " + str(role.mention) +
+                               "```")
+        await self.bot.delete_message(ctx.message)
+
+    @commands.command(pass_context=True, no_pm=True, aliases=['listroles', 'rolelist'])
+    async def roles(self, ctx, server: str = None):
+        """Get all roles on server"""
+        if server is None:
+            server = ctx.message.server
+        else:
+            server = discord.utils.get(self.bot.servers, id=server)
+        if server is None:
+            await self.bot.say("Failed to get server with provided ID")
+            await self.bot.delete_message(ctx.message)
+            return
+        roles = []
+        for elem in server.role_hierarchy:
+            roles.append(elem.name)
+        em = discord.Embed(title="List of roles", description="\n".join([str(x) for x in roles]),
+                           colour=random.randint(0, 16777215))
+        em.set_footer(text="Total count of roles: " + str(len(server.roles)))
+        if check.embeds_allowed(ctx.message):
+            await self.bot.say(embed=em)
+        else:
+            await self.bot.say("**List of roles:**\n```" + "\n".join([str(x) for x in roles]) +
+                               "```\nTotal count: " + str(len(server.roles)))
         await self.bot.delete_message(ctx.message)
 
 

@@ -5,7 +5,8 @@ from discord.ext.commands.formatter import HelpFormatter
 from discord.ext.commands.formatter import GroupMixin, Command
 from discord.ext.commands.errors import CommandError
 
-# all copied from discord.ext.commands.formatter, with slight alteratios
+
+# all copied from discord.ext.commands.formatter, with slight alterations
 
 class CustomHelp(HelpFormatter):
     def __init__(self, show_hidden=False, show_check_failure=False, width=80):
@@ -114,6 +115,7 @@ class CustomHelp(HelpFormatter):
             An iterable with the filter being applied. The resulting value is
             a (key, value) tuple of the command name and the command itself.
         """
+
         def predicate(tuple):
             cmd = tuple[1]
             if self.is_cog():
@@ -189,7 +191,7 @@ class CustomHelp(HelpFormatter):
             A paginated output of the help command.
         """
         self._pages = []
-        self._count = 4 # ``` + '\n'
+        self._count = 4  # ``` + '\n'
         self._current_page = ['```']
 
         # we need a padding of ~80 or so
@@ -205,7 +207,7 @@ class CustomHelp(HelpFormatter):
         if isinstance(self.command, Command):
             # <signature portion>
             signature = self.get_command_signature()
-            self._count += 2 + len(signature) # '\n' sig '\n'
+            self._count += 2 + len(signature)  # '\n' sig '\n'
             self._current_page.append(signature)
             self._current_page.append('')
 
@@ -221,7 +223,6 @@ class CustomHelp(HelpFormatter):
                 self._current_page.append('```')
                 self._pages.append('\n'.join(self._current_page))
                 return self._pages
-
 
         max_width = self.max_name_size
 
