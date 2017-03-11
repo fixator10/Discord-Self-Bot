@@ -1,7 +1,7 @@
-pynames
 pip
 git+git://github.com/Rapptz/discord.py.git#egg=discord.py[voice]
 matplotlib
 yandex.translate
 geocoder
 python-forecastio
+Pynames
