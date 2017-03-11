@@ -4,9 +4,6 @@ import inspect
 import os
 import sys
 
-REQS_DIR = "libs"
-sys.path.insert(0, REQS_DIR)
-
 import discord
 from discord.ext import commands
 
