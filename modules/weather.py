@@ -3,6 +3,7 @@ import geocoder
 import discord
 import datetime
 from modules.utils.dataIO import dataIO
+import modules.utils.checks as check
 from discord.ext import commands
 
 
@@ -10,10 +11,6 @@ def xstr(s):
     if s is None:
         return ''
     return str(s)
-
-
-def embeds_allowed(message):
-    return message.channel.permissions_for(message.author).embed_links
 
 
 dictionary = {
@@ -57,7 +54,7 @@ class Weather:
                   + ":\n" + by_hour.summary + "\n" + str(by_hour.temperature) + \
                   "˚C" + "\n" + dictionary.get(xstr(by_hour.icon))
         em = discord.Embed(description=content, colour=0xff0000, timestamp=by_hour.time)
-        if embeds_allowed(ctx.message):
+        if check.embeds_allowed(ctx.message):
             await self.bot.say(embed=em)
         else:
             await self.bot.say(content)
@@ -101,7 +98,7 @@ class Weather:
                       xstr(by_hour.data[i].temperatureMax) + "˚C       " \
                       + dictionary.get(xstr(by_hour.data[i].icon)) + "\n"
         em = discord.Embed(description=content, colour=0xff0000, timestamp=datetime.datetime.now())
-        if embeds_allowed(ctx.message):
+        if check.embeds_allowed(ctx.message):
             await self.bot.say(embed=em)
         else:
             await self.bot.say(content)

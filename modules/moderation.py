@@ -72,8 +72,11 @@ class Moderation:
         em.add_field(name="Owner", value=server.owner)
         em.add_field(name="AFK Timeout and Channel", value=str(afk) + " min in " + str(server.afk_channel))
         em.add_field(name="Verification level",
-                     value=str(server.verification_level).replace("none", "None").replace("low", "Low").replace(
-                         "medium", "Medium").replace("high", "(╯°□°）╯︵ ┻━┻"))
+                     value=str(server.verification_level)
+                     .replace("none", "None")
+                     .replace("low", "Low")
+                     .replace("medium", "Medium")
+                     .replace("high", "(╯°□°）╯︵ ┻━┻"))
         em.add_field(name="2FA admins", value=str(server.mfa_level).replace("0", "❌").replace("1", "✔"))
         em.add_field(name="Member Count", value=server.member_count)
         em.add_field(name="Role Count", value=str(len(server.roles)))
@@ -183,7 +186,9 @@ class Moderation:
                      value="[" + str(role.permissions.value) + "](https://discordapi.com/permissions.html#" + str(
                          role.permissions.value) + ")")
         em.add_field(name="Has existed since", value=role.created_at.strftime('%d.%m.%Y %H:%M:%S %Z'))
-        em.add_field(name="Hoist", value=str(role.hoist).replace("True", "✔").replace("False", "❌"))
+        em.add_field(name="Hoist", value=str(role.hoist)
+                     .replace("True", "✔")
+                     .replace("False", "❌"))
         em.add_field(name="Position", value=role.position)
         em.add_field(name="Color", value=role.colour)
         em.add_field(name="Managed", value=str(role.managed).replace("True", "✔").replace("False", "❌"))

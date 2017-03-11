@@ -2,7 +2,6 @@
 from __future__ import print_function
 import inspect
 import os
-import sys
 
 import discord
 from discord.ext import commands
@@ -19,9 +18,44 @@ initial_extensions = [
     "penis",
     "eval",
     "weather",
-    "namegen",
+    "namegen"
 ]
-version = "F10.0.0.28"
+version = "F10.0.0.29"
+
+def_config = {
+    "prefix": "self.",
+    "description": "FG17: Discord SelfBot",
+
+    "modules": [
+        "admin",
+        "moderation",
+        "tags",
+        "animelist",
+        "generic",
+        "penis",
+        "eval",
+        "weather",
+        "namegen"
+    ],
+
+    "yandex_translate_API_key": "Your API Key from https://translate.yandex.ru/apikeys",
+    "dark_sky_api_key": "Your API Key from https://darksky.net/dev/",
+    "hometown": "Your city",
+
+    "signature_title": "Username",
+    "signature_desc": "From Selfbot",
+    "signature_url": "http://google.com",
+    "signature_colour": 0,
+    "signature_field_name": "«Sometimes, i dream about cheese»",
+    "signature_field_content": "Some text about cheese"
+}
+
+if not os.path.exists("data/SelfBot"):
+    os.makedirs("data/SelfBot")
+
+if not dataIO.is_valid_json("data/SelfBot/config.json"):
+    print("<!>[ERROR] Incorrect or missing config.json\n<!> Recreating...")
+    dataIO.save_json("data/SelfBot/config.json", def_config)
 
 config = dataIO.load_json("data/SelfBot/config.json")
 
@@ -41,10 +75,11 @@ bot = commands.Bot(command_prefix=[config["prefix"]], description=description, s
 
 @bot.event
 async def on_ready():
-    # Outputs login data to console
+    print("---------------------------")
+    print(config["description"] + "\n" + "Version: \"" + version + "\"")
     print("---------------------------")
     print('Logged in as')
-    print(bot.user.name+"#"+str(bot.user.discriminator))
+    print(bot.user.name + "#" + str(bot.user.discriminator))
     print(bot.user.id)
     print("---------------------------")
 
@@ -54,8 +89,8 @@ async def on_ready():
             bot.load_extension("modules." + extension)
             print("* " + extension)
         except Exception as e:
-            print('Failed to load extension {}\n{}: {}'.format(
-                extension, type(e).__name__, e))
+            print('Failed to load extension {}\n{}: {}'
+                  .format(extension, type(e).__name__, e))
     print("---------------------------")
 
     await bot.change_presence(afk=True, status=discord.Status.invisible)
@@ -68,6 +103,7 @@ async def on_command_error(error, ctx):
         await bot.send_message(ctx.message.channel, str(error))
         await bot.delete_message(ctx.message)
     elif isinstance(error, commands.CommandNotFound):
+        await bot.delete_message(ctx.message)
         pass
     else:
         await bot.send_message(ctx.message.channel, "\u26A0 An error occurred: `" + str(
@@ -148,14 +184,14 @@ if __name__ == "__main__":
             bot.run(userinfo["token"], bot=False)
         except discord.LoginFailure as e:
             print("Failed to login with token.\nLaunch login.bat and authorise again or create and fill "
-                  "self_token.json manually\n"+str(e))
+                  "self_token.json manually\n" + str(e))
     elif os.path.exists("data/SelfBot/self_password.json"):
         userinfo = dataIO.load_json("data/SelfBot/self_password.json")
         try:
             bot.run(userinfo["login"], userinfo["password"], bot=False)
         except discord.LoginFailure as e:
             print("Failed to login with login and pass.\nLaunch login.bat and authorise again or create and fill "
-                  "self_password.json manually\n"+str(e))
+                  "self_password.json manually\n" + str(e))
     else:
         print("Credentials not found.\nLaunch login.bat or create and fill up self_token.json or self_password.json "
               "manually")

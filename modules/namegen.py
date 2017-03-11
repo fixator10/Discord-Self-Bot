@@ -83,8 +83,9 @@ class NameGenerator:
             warning = "Sorry, but looks like something went wrong and we can't get name with provided settings (" \
                       "Language or Gender)\nName generated without provided parameters\n"
             name = name_gen.get_name_simple()
-        await self.bot.say(warning+"Your generated name: `" + str(name) + "`")
+        await self.bot.say(warning + "Your generated name: `" + str(name) + "`")
         await self.bot.delete_message(ctx.message)
+
 
 def setup(bot):
     bot.add_cog(NameGenerator(bot))

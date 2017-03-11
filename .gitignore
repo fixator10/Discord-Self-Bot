@@ -1,7 +1,3 @@
-self_token.json
-self_password.json
-credentials.json
-tags.json
 *.pyc
 .idea
 desktop.ini
