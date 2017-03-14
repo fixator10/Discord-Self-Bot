@@ -1,7 +1,6 @@
 data
+libs
+tests
 *.pyc
 .idea
 desktop.ini
-libs
-test.py
-terminal.py

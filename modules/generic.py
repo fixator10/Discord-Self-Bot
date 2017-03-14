@@ -6,14 +6,14 @@ import random
 import re
 import time
 
+import aiohttp
 import discord
 from discord.ext import commands
 from yandex_translate import YandexTranslate
 
-from modules.utils.dataIO import dataIO
-import modules.utils.color_converter as cc
 import modules.utils.checks as check
-
+import modules.utils.color_converter as cc
+from modules.utils.dataIO import dataIO
 
 config = dataIO.load_json("data/SelfBot/config.json")
 
@@ -21,8 +21,9 @@ translate = YandexTranslate(config["yandex_translate_API_key"])
 
 
 class General:
-    def __init__(self, bot):
+    def __init__(self, bot: discord.Client):
         self.bot = bot
+        self.session = aiohttp.ClientSession(loop=self.bot.loop)
 
     # @commands.command(pass_context=True, aliases=["game"])
     # async def status(self, ctx, status: str, url: str = None):
@@ -270,8 +271,8 @@ class General:
                 .replace("*", "*⃣"))
         await self.bot.delete_message(ctx.message)
 
-    @commands.command(pass_context=True)
-    async def pingtime(self, ctx):
+    @commands.command(pass_context=True, aliases=["pingtime", "ping"])
+    async def pingt(self, ctx):
         """pseudo-ping time"""
         channel = ctx.message.channel
         t1 = time.perf_counter()

@@ -20,7 +20,7 @@ initial_extensions = [
     "weather",
     "namegen"
 ]
-version = "F10.0.0.29"
+version = "F10.0.0.30"
 
 def_config = {
     "prefix": "self.",
@@ -38,7 +38,7 @@ def_config = {
         "namegen"
     ],
 
-    "yandex_translate_API_key": "Your API Key from https://translate.yandex.ru/apikeys",
+    "yandex_translate_API_key": "Your API Key from https://translate.yandex.com/apikeys",
     "dark_sky_api_key": "Your API Key from https://darksky.net/dev/",
     "hometown": "Your city",
 
@@ -95,11 +95,10 @@ async def on_ready():
 
     await bot.change_presence(afk=True, status=discord.Status.invisible)
 
-
 @bot.event
 async def on_command_error(error, ctx):
     if isinstance(error, commands.MissingRequiredArgument) or isinstance(error, commands.BadArgument) or isinstance(
-            error, commands.NoPrivateMessage):
+            error, commands.NoPrivateMessage) or isinstance(error, commands.CheckFailure):
         await bot.send_message(ctx.message.channel, str(error))
         await bot.delete_message(ctx.message)
     elif isinstance(error, commands.CommandNotFound):
@@ -112,6 +111,8 @@ async def on_command_error(error, ctx):
         await bot.delete_message(ctx.message)
         raise error
 
+# @bot.event
+# async def on_command(cmd):
 
 ########################################################################################################################
 
