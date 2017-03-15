@@ -5,7 +5,7 @@ from pynames.generators.mongolian import MongolianNamesGenerator
 from pynames.generators.orc import OrcNamesGenerator
 from pynames.generators.russian import PaganNamesGenerator
 from pynames.generators.scandinavian import ScandinavianNamesGenerator
-from pynames import GENDER, LANGUAGE
+from pynames import GENDER
 import modules.utils.chat_formatting as chat
 
 from discord.ext import commands
@@ -16,7 +16,7 @@ class NameGenerator:
         self.bot = bot
 
     @commands.command(pass_context=True, name="name")
-    async def _genname(self, ctx, generator: str = "WarHammer", gender: str = "Male", language: str = "RU"):
+    async def _genname(self, ctx, generator: str = "WarHammer", gender: str = "Male"):
         """Generate random name
 
         Available generators:
@@ -29,15 +29,11 @@ class NameGenerator:
         Russian
         Scandinavian
 
-        Available languages:
-        RU, EN
-
         Available genders:
         Male, Female
         """
         generator = generator.lower()
         gender = gender.lower()
-        language = language.lower()
 
         if generator == "dnd":
             name_gen = DnDNamesGenerator()
@@ -71,23 +67,19 @@ class NameGenerator:
             await self.bot.delete_message(ctx.message)
             return
 
-        if language == "ru":
-            lang_gen = LANGUAGE.RU
-        elif language == "en":
-            lang_gen = LANGUAGE.EN
-        else:
-            await self.bot.say("Incorrect language provided. List of available languages:\n```\nEN\nRU```")
-            await self.bot.delete_message(ctx.message)
-            return
+        name = name_gen.get_name(genders=gen_gen)
+        mess_text = ""
+        for lang in name.translations[gen_gen]:
+            if isinstance(name.translations[gen_gen][lang], list):
+                names = []
+                for name_form in name.translations[gen_gen][lang]:
+                    names.append(name_form)
+                mess_text = mess_text + "\n" + str(lang).upper() + " (all forms):" \
+                                                                   " " + chat.box("\n".join([str(x) for x in names]))
+            else:
+                mess_text = mess_text + "\n" + str(lang).upper() + ": " + chat.box(name.translations[gen_gen][lang])
+        await self.bot.say(mess_text)
 
-        warning = ""
-        try:
-            name = name_gen.get_name_simple(gen_gen, lang_gen)
-        except KeyError:
-            warning = chat.warning("Sorry, but looks like this generator doesn't support this provided language ({})\n"
-                                   "Name generated with only possible default language\n".format(language))
-            name = name_gen.get_name_simple(gen_gen)
-        await self.bot.say(warning + "Your generated name: "+chat.inline(name))
         await self.bot.delete_message(ctx.message)
 
 

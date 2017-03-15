@@ -34,16 +34,23 @@ class Admin:
     @commands.has_permissions(kick_members=True)
     async def cleanup(self, ctx, days: int = 1):
         """Cleanup inactive server members"""
+        if days > 30:
+            await self.bot.say(
+                chat.error("Due to Discord Restrictions, you cannot use more than 30 days for that cmd."))
+            days = 30
+        elif days == 0:
+            await self.bot.say(chat.error("\"days\" arg cannot be an zero..."))
+            days = 1
         await self.bot.delete_message(ctx.message)
         to_kick = await self.bot.estimate_pruned_members(ctx.message.server, days=days)
         await self.bot.say(chat.warning("You about to kick **{}** inactive for **{}** days members from this server. "
                                         "Are you sure?\nTo agree, type \"yes\"".format(to_kick, days)))
-        await sleep(3)
+        await sleep(1)
         resp = await self.bot.wait_for_message(author=ctx.message.author, channel=ctx.message.channel)
         if resp.content.lower().strip() == "yes":
             cleanup = await self.bot.prune_members(ctx.message.server, days=days)
             await self.bot.say(chat.info("**{}**/**{}** inactive members removed.\n"
-                               "(They was inactive for **{}** days)".format(cleanup, to_kick, days)))
+                                         "(They was inactive for **{}** days)".format(cleanup, to_kick, days)))
         else:
             await self.bot.say(chat.error("Inactive members cleanup canceled."))
 

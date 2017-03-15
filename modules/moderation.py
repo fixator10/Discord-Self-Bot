@@ -7,7 +7,7 @@ import modules.utils.checks as check
 
 
 class Moderation:
-    def __init__(self, bot):
+    def __init__(self, bot: discord.Client):
         self.bot = bot
 
     @commands.command(pass_context=True, no_pm=True, aliases=['memberinfo', 'meminfo', 'membinfo',
@@ -37,14 +37,14 @@ class Moderation:
             await self.bot.say(embed=em)
         else:
             await self.bot.say("```\n" +
-                               "Name: "+member.name +
-                               "\nJoined server: "+member.joined_at.strftime('%d.%m.%Y %H:%M:%S %Z') +
-                               "\nID: "+member.id +
-                               "\nHas existed since: "+member.created_at.strftime('%d.%m.%Y %H:%M:%S %Z') +
-                               "\nColor: "+str(member.color) +
-                               "\nBot?: "+str(member.bot).replace("True", "✔").replace("False", "❌") +
-                               "\nServer perms: "+str(member.server_permissions.value) +
-                               "\nRoles: "+"\n".join([str(x) for x in rolelist]) +
+                               "Name: " + member.name +
+                               "\nJoined server: " + member.joined_at.strftime('%d.%m.%Y %H:%M:%S %Z') +
+                               "\nID: " + member.id +
+                               "\nHas existed since: " + member.created_at.strftime('%d.%m.%Y %H:%M:%S %Z') +
+                               "\nColor: " + str(member.color) +
+                               "\nBot?: " + str(member.bot).replace("True", "✔").replace("False", "❌") +
+                               "\nServer perms: " + str(member.server_permissions.value) +
+                               "\nRoles: " + "\n".join([str(x) for x in rolelist]) +
                                "```\n" +
                                member.avatar_url)
         await self.bot.delete_message(ctx.message)
@@ -94,23 +94,23 @@ class Moderation:
             await self.bot.say(embed=em)
         else:
             await self.bot.say("```\n" +
-                               "Name: "+server.name +
-                               "\nServer ID: "+server.id +
-                               "\nRegion: "+str(server.region) +
-                               "\nExisted since: "+server.created_at.strftime('%d.%m.%Y %H:%M:%S %Z') +
-                               "\nOwner: "+str(server.owner) +
-                               "\nAFK timeout and Channel: "+str(afk) + " min in " + str(server.afk_channel) +
+                               "Name: " + server.name +
+                               "\nServer ID: " + server.id +
+                               "\nRegion: " + str(server.region) +
+                               "\nExisted since: " + server.created_at.strftime('%d.%m.%Y %H:%M:%S %Z') +
+                               "\nOwner: " + str(server.owner) +
+                               "\nAFK timeout and Channel: " + str(afk) + " min in " + str(server.afk_channel) +
                                "\nVerification level: " +
                                str(server.verification_level).replace("none", "None").replace("low", "Low")
                                .replace("medium", "Medium").replace("high", "(╯°□°）╯︵ ┻━┻") +
-                               "\n2FA admins: "+str(server.mfa_level).replace("0", "❌").replace("1", "✔") +
-                               "\nMember Count: "+str(server.member_count) +
-                               "\nRole Count: "+str(len(server.roles)) +
-                               "\nChannel Count: "+str(len(server.channels)) +
-                               "\nVIP Voice Regions: "+vip_regs +
-                               "\nVanity URL: "+van_url +
-                               "\nInvite Splash: "+str(inv_splash).replace("True", "✔").replace("False", "❌") +
-                               "\nInvite Splash URL: "+server.splash_url +
+                               "\n2FA admins: " + str(server.mfa_level).replace("0", "❌").replace("1", "✔") +
+                               "\nMember Count: " + str(server.member_count) +
+                               "\nRole Count: " + str(len(server.roles)) +
+                               "\nChannel Count: " + str(len(server.channels)) +
+                               "\nVIP Voice Regions: " + vip_regs +
+                               "\nVanity URL: " + van_url +
+                               "\nInvite Splash: " + str(inv_splash).replace("True", "✔").replace("False", "❌") +
+                               "\nInvite Splash URL: " + server.splash_url +
                                "```\n" +
                                server.icon_url)
         await self.bot.delete_message(ctx.message)

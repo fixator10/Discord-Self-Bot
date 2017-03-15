@@ -20,7 +20,7 @@ initial_extensions = [
     "weather",
     "namegen"
 ]
-version = "F10.0.0.30"
+version = "F10.0.0.31"
 
 def_config = {
     "prefix": "self.",
@@ -95,6 +95,7 @@ async def on_ready():
 
     await bot.change_presence(afk=True, status=discord.Status.invisible)
 
+
 @bot.event
 async def on_command_error(error, ctx):
     if isinstance(error, commands.MissingRequiredArgument) or isinstance(error, commands.BadArgument) or isinstance(
@@ -110,6 +111,7 @@ async def on_command_error(error, ctx):
                      "<https://github.com/fixator10/Discord-Self-Bot/issues>")
         await bot.delete_message(ctx.message)
         raise error
+
 
 # @bot.event
 # async def on_command(cmd):
