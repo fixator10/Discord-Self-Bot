@@ -16,9 +16,13 @@ class Moderation:
         """Information on a user"""
         if member is None:
             member = ctx.message.author
-        rolelist = []
-        for elem in member.roles:
-            rolelist.append(elem.name)
+        roles = [x.name for x in member.roles if x.name != "@everyone"] # from Red-DiscordBot by TwentySix
+        if roles:
+            roles = sorted(roles, key=[x.name for x in ctx.message.server.role_hierarchy
+                                       if x.name != "@everyone"].index)
+            roles = "\n".join(roles)
+        else:
+            roles = "`None`"
         em = discord.Embed(title=member.nick, colour=member.colour)
         em.add_field(name="Name", value=member.name)
         em.add_field(name="Joined server", value=member.joined_at.strftime('%d.%m.%Y %H:%M:%S %Z'))
@@ -29,7 +33,7 @@ class Moderation:
         em.add_field(name="Server perms", value="[" + str(
             member.server_permissions.value) + "](https://discordapi.com/permissions.html#" + str(
             member.server_permissions.value) + ")")
-        em.add_field(name="Roles", value="\n".join([str(x) for x in rolelist]), inline=False)
+        em.add_field(name="Roles", value=roles, inline=False)
         em.set_image(url=member.avatar_url)
         em.set_thumbnail(url="https://xenforo.com/community/rgba.php?r=" + str(member.colour.r) + "&g=" + str(
             member.colour.g) + "&b=" + str(member.colour.b) + "&a=255")
@@ -44,10 +48,9 @@ class Moderation:
                                "\nColor: " + str(member.color) +
                                "\nBot?: " + str(member.bot).replace("True", "✔").replace("False", "❌") +
                                "\nServer perms: " + str(member.server_permissions.value) +
-                               "\nRoles: " + "\n".join([str(x) for x in rolelist]) +
+                               "\nRoles: " + roles +
                                "```\n" +
                                member.avatar_url)
-        await self.bot.delete_message(ctx.message)
 
     @commands.command(pass_context=True, no_pm=True, aliases=['servinfo', 'serv', 'sv'])
     async def serverinfo(self, ctx, server: str = None):
@@ -58,7 +61,6 @@ class Moderation:
             server = self.bot.get_server(server)
         if server is None:
             await self.bot.say("Failed to get server with provided ID")
-            await self.bot.delete_message(ctx.message)
             return
         afk = server.afk_timeout / 60
         vip_regs = str("VIP_REGIONS" in server.features).replace("True", "✔").replace("False", "❌")
@@ -113,7 +115,6 @@ class Moderation:
                                "\nInvite Splash URL: " + server.splash_url +
                                "```\n" +
                                server.icon_url)
-        await self.bot.delete_message(ctx.message)
 
     @commands.command(pass_context=True, no_pm=True, aliases=['channelinfo', 'chaninfo', 'chan'])
     async def channel(self, ctx, *, channel: discord.Channel):
@@ -142,7 +143,6 @@ class Moderation:
                                "\nChanged roles permissions: " + "\n".join([str(x) for x in changed_roles]) +
                                "\nMention: " + channel.mention +
                                "```")
-        await self.bot.delete_message(ctx.message)
 
     @commands.command(pass_context=True, no_pm=True, aliases=['channellist', 'listchannels'])
     async def channels(self, ctx, server: str = None):
@@ -153,7 +153,6 @@ class Moderation:
             server = discord.utils.get(self.bot.servers, id=server)
         if server is None:
             await self.bot.say("Failed to get server with provided ID")
-            await self.bot.delete_message(ctx.message)
             return
         vchans = []
         tchans = []
@@ -175,7 +174,6 @@ class Moderation:
                                "```\nTotal count: " + str(len(server.channels)) +
                                " | Text Channels: " + str(len(tchans)) +
                                " | Voice Channels: " + str(len(vchans)))
-        await self.bot.delete_message(ctx.message)
 
     @commands.command(pass_context=True, no_pm=True, aliases=['roleinfo'])
     async def role(self, ctx, *, role: discord.Role):
@@ -210,7 +208,6 @@ class Moderation:
                                "\nMentionable: " + str(role.mentionable).replace("True", "✔").replace("False", "❌") +
                                "\nMention: " + str(role.mention) +
                                "```")
-        await self.bot.delete_message(ctx.message)
 
     @commands.command(pass_context=True, no_pm=True, aliases=['listroles', 'rolelist'])
     async def roles(self, ctx, server: str = None):
@@ -221,7 +218,6 @@ class Moderation:
             server = discord.utils.get(self.bot.servers, id=server)
         if server is None:
             await self.bot.say("Failed to get server with provided ID")
-            await self.bot.delete_message(ctx.message)
             return
         roles = []
         for elem in server.role_hierarchy:
@@ -234,7 +230,6 @@ class Moderation:
         else:
             await self.bot.say("**List of roles:**\n```" + "\n".join([str(x) for x in roles]) +
                                "```\nTotal count: " + str(len(server.roles)))
-        await self.bot.delete_message(ctx.message)
 
 
 def setup(bot):

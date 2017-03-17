@@ -40,7 +40,6 @@ class Tags:
             await self.bot.say("Tag {} has been removed :thumbsup:".format(command))
         else:
             await self.bot.say("Tag not registered, could not delete :thumbsdown: ")
-        await self.bot.delete_message(ctx.message)
 
     @commands.command(pass_context=True, name="tags")
     async def _tags(self, ctx):
@@ -51,7 +50,6 @@ class Tags:
         for x in self.tags.keys():
             taglist = "{}\n- {}".format(taglist, x)
         await self.bot.say("{0} ```".format(taglist))
-        await self.bot.delete_message(ctx.message)
 
     @commands.command(pass_context=True)
     async def tag(self, ctx, userinput: str, *, output: str = None):
@@ -70,7 +68,6 @@ class Tags:
                     await self.bot.say("Tag {} has been added with output <{}> :thumbsup:".format(userinput, output))
                 else:
                     await self.bot.say("Tag {} has been added with output {} :thumbsup:".format(userinput, output))
-        await self.bot.delete_message(ctx.message)
 
     async def save_tags(self):
         while True:

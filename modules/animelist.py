@@ -42,7 +42,6 @@ class Animelist:
         dataIO.save_json(self.file_path, self.credentials)
         await self.bot.say("Setup complete. Account details added.\nTry searching for "
                            "an anime using {}anime".format(ctx.prefix))
-        await self.bot.delete_message(ctx.message)
 
     @commands.command(pass_context=True, no_pm=True)
     async def anime(self, ctx, *, title):

@@ -39,7 +39,6 @@ class Weather:
     @commands.command(pass_context=True)
     async def weather(self, ctx, place: str = None):
         """Shows weather in provided place"""
-        await self.bot.delete_message(ctx.message)
         if place is None:
             place = config["hometown"]
         g = geocoder.google(place)
@@ -61,7 +60,6 @@ class Weather:
 
     # @commands.command(pass_context=True)
     # async def time(self, ctx, place: str = None):
-    #     await self.bot.delete_message(ctx.message)
     #     if place is None:
     #         forecast = forecastio.load_forecast(self.apikey, "40.241495", "-75.283786", units="si")
     #         by_hour = forecast.currently()
@@ -79,7 +77,6 @@ class Weather:
     @commands.command(pass_context=True)
     async def forecast(self, ctx, place: str = None):
         """Shows 7 days forecast for provided place"""
-        await self.bot.delete_message(ctx.message)
         if place is None:
             place = config["hometown"]
         g = geocoder.google(place)

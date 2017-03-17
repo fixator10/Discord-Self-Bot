@@ -1,12 +1,18 @@
-from pynames.generators.elven import DnDNamesGenerator, WarhammerNamesGenerator
-from pynames.generators.goblin import GoblinGenerator
-from pynames.generators.korean import KoreanNamesGenerator
-from pynames.generators.mongolian import MongolianNamesGenerator
-from pynames.generators.orc import OrcNamesGenerator
-from pynames.generators.russian import PaganNamesGenerator
-from pynames.generators.scandinavian import ScandinavianNamesGenerator
-from pynames import GENDER
-import modules.utils.chat_formatting as chat
+try:
+    from pynames.generators.elven import DnDNamesGenerator, WarhammerNamesGenerator
+    from pynames.generators.goblin import GoblinGenerator
+    from pynames.generators.korean import KoreanNamesGenerator
+    from pynames.generators.mongolian import MongolianNamesGenerator
+    from pynames.generators.orc import OrcNamesGenerator
+    from pynames.generators.russian import PaganNamesGenerator
+    from pynames.generators.scandinavian import ScandinavianNamesGenerator
+    from pynames import GENDER
+    import modules.utils.chat_formatting as chat
+
+    ImportFail = False
+except:
+    ImportFail = True
+    pass
 
 from discord.ext import commands
 
@@ -55,7 +61,6 @@ class NameGenerator:
             await self.bot.say("Incorrect generator provided. List of available "
                                "generators:\n```\nDnD\nWarhammer\nGoblin\nKorean\nMongolian\nOrc\nRussian"
                                "\nScandinavian```")
-            await self.bot.delete_message(ctx.message)
             return
 
         if gender == "male":
@@ -64,7 +69,6 @@ class NameGenerator:
             gen_gen = GENDER.FEMALE
         else:
             await self.bot.say("Incorrect gender provided. List of available genders:\n```\nMale\nFemale```")
-            await self.bot.delete_message(ctx.message)
             return
 
         name = name_gen.get_name(genders=gen_gen)
@@ -80,8 +84,10 @@ class NameGenerator:
                 mess_text = mess_text + "\n" + str(lang).upper() + ": " + chat.box(name.translations[gen_gen][lang])
         await self.bot.say(mess_text)
 
-        await self.bot.delete_message(ctx.message)
-
 
 def setup(bot):
-    bot.add_cog(NameGenerator(bot))
+    if ImportFail:
+        RuntimeError("Failed to import \"PyNames\" lib.\nInstall it by executing \"pip install pynames\" in command "
+                     "line / terminal, or disable this module in \"config.json\"")
+    else:
+        bot.add_cog(NameGenerator(bot))

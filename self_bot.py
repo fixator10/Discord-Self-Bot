@@ -20,13 +20,14 @@ initial_extensions = [
     "weather",
     "namegen"
 ]
-version = "F10.0.0.31"
+version = "F10.0.0.32"
 
 def_config = {
     "prefix": "self.",
     "description": "FG17: Discord SelfBot",
 
     "modules": [
+        "cmd_rm",
         "admin",
         "moderation",
         "tags",
@@ -101,36 +102,22 @@ async def on_command_error(error, ctx):
     if isinstance(error, commands.MissingRequiredArgument) or isinstance(error, commands.BadArgument) or isinstance(
             error, commands.NoPrivateMessage) or isinstance(error, commands.CheckFailure):
         await bot.send_message(ctx.message.channel, str(error))
-        await bot.delete_message(ctx.message)
     elif isinstance(error, commands.CommandNotFound):
-        await bot.delete_message(ctx.message)
         pass
     else:
         await bot.send_message(ctx.message.channel, "\u26A0 An error occurred: `" + str(
             error) + "`\nCheck console for further information\n\nIssue tracker: "
                      "<https://github.com/fixator10/Discord-Self-Bot/issues>")
-        await bot.delete_message(ctx.message)
         raise error
 
 
-# @bot.event
-# async def on_command(cmd):
-
 ########################################################################################################################
-
-# Ping Pong
-# Testing the response of the bot
-# @bot.command()
-# async def ping():
-#     """Pong. Test's responsiveness of bot"""
-#     await bot.say("Pong")
 
 
 @bot.command(pass_context=True, name='shutdown', aliases=['off', 'close', 'захлопнись', 'выключить'])
 async def _botshutdown(ctx):
     """Shuts bot down"""
     await bot.say("SelfBot shutting down...")
-    await bot.delete_message(ctx.message)
     await bot.close()
 
 
@@ -140,14 +127,12 @@ async def source(ctx):
     await bot.say(
         "<@95953002774413312>'s original: <https://github.com/DiNitride/Discord-Self-Bot>\n\n<@131813999326134272>'s "
         "fork (this): https://github.com/fixator10/Discord-Self-Bot")
-    await bot.delete_message(ctx.message)
 
 
 @bot.command(pass_context=True, aliases=["bug", "issue"])
 async def server(ctx):
     """The bot's server, for updates or something"""
     await bot.say("Original bot's server: \nhttps://discord.gg/Eau7uhf\nThis fork's server: https://discord.gg/TrQRkTN")
-    await bot.delete_message(ctx.message)
 
 
 @bot.command(pass_context=True)
@@ -158,7 +143,6 @@ async def reload(ctx, module: str):
         bot.load_extension("modules." + module)
     except Exception as e:
         await bot.say("{}: {}".format(type(e).__name__, e))
-    await bot.delete_message(ctx.message)
 
 
 @bot.command(pass_context=True, name="eval")
@@ -174,7 +158,6 @@ async def eval_(ctx, *, code: str):
         await bot.say("```py\nInput: {}\n{}: {}```".format(code, type(e).__name__, e))
     else:
         await bot.say("```py\nInput: {}\nOutput: {}\n```".format(code, result))
-    await bot.delete_message(message)
 
 
 ########################################################################################################################

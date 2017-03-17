@@ -13,6 +13,7 @@ from yandex_translate import YandexTranslate
 
 import modules.utils.checks as check
 import modules.utils.color_converter as cc
+import modules.utils.chat_formatting as chat
 from modules.utils.dataIO import dataIO
 
 config = dataIO.load_json("data/SelfBot/config.json")
@@ -35,7 +36,6 @@ class General:
     #         game.type = 1
     #     await self.bot.change_presence(game=discord.Game(name=status))
     #     await self.bot.say("Status updated to {}".format(status))
-    #     await self.bot.delete_message(ctx.message)
 
     @commands.command(pass_context=True)
     async def signed(self, ctx, *, message: str = None):
@@ -44,7 +44,6 @@ class General:
         Text changeable in config.json"""
         if not check.embeds_allowed(ctx.message):
             await self.bot.say("Not allowed to send embeds here. Lack `Embed Links` permission")
-            await self.bot.delete_message(ctx.message)
             return
         em = discord.Embed(title=config["signature_title"], description=config["signature_desc"],
                            url=config["signature_url"], colour=config["signature_colour"],
@@ -52,7 +51,6 @@ class General:
         em.add_field(name=config["signature_field_name"], value=config["signature_field_content"], inline=False)
         em.set_footer(text=ctx.message.author.nick or ctx.message.author.name, icon_url=ctx.message.author.avatar_url)
         await self.bot.say(message, embed=em)
-        await self.bot.delete_message(ctx.message)
 
     @commands.command(pass_context=True)
     async def embed(self, ctx, *, message: str):
@@ -62,7 +60,6 @@ class General:
         Inline code markdown at start and at end of message will be removed"""
         if not check.embeds_allowed(ctx.message):
             await self.bot.say("Not allowed to send embeds here. Lack `Embed Links` permission")
-            await self.bot.delete_message(ctx.message)
             return
         message = re.sub(r'^\s*(`\s*)?|(\s*`)?\s*$', '', message)
         if ctx.message.server:
@@ -71,7 +68,6 @@ class General:
             em_color = discord.Colour.default()
         em = discord.Embed(description=message, colour=em_color)
         await self.bot.say(embed=em)
-        await self.bot.delete_message(ctx.message)
 
     @commands.command(pass_context=True)
     async def translate(self, ctx, language: str, *, text: str):
@@ -100,7 +96,6 @@ class General:
                 await self.bot.say("An error has been occurred: Service Unavailable. Try again later")
             else:
                 await self.bot.say("An error has been occurred: " + str(e))
-            await self.bot.delete_message(ctx.message)
             return
         if response["code"] == 200:
             await self.bot.say("**Input:** ```\n" + text + "``` ")
@@ -109,7 +104,6 @@ class General:
             # According to yandex.translate source code this cannot happen too, but whatever...
             await self.bot.say(
                 "An error has been occurred. Translation server returned code `" + response["code"] + "`")
-        await self.bot.delete_message(ctx.message)
 
     @commands.command(pass_context=True, aliases=["ецихо"])
     async def eciho(self, ctx, *, text: str):
@@ -135,7 +129,90 @@ class General:
         table = str.maketrans(char, tran)
         text = text.translate(table)
         await self.bot.say(text)
-        await self.bot.delete_message(ctx.message)
+
+    @commands.group()
+    async def leet(self):
+        """Leet (1337) translation commands"""
+
+    @leet.command(pass_context=True, name="leet", aliases=["1337"])
+    async def _leet(self, ctx, *, text: str):
+        """Translates provided text to 1337"""
+        text = text.upper()
+        dic = {
+            "A": random.choice(["/-|", "4"]),
+            "B": "8",
+            "C": random.choice(["(", "["]),
+            "D": "|)",
+            "E": "3",
+            "F": random.choice(["|=", "ph"]),
+            "G": "6",
+            "H": "|-|",
+            "I": random.choice(["|", "!", "1"]),
+            "J": ")",
+            "K": random.choice(["|<", "|("]),
+            "L": random.choice(["|_", "1"]),
+            "M": random.choice(["|\\/|", "/\\/\\"]),
+            "N": random.choice(["|\\|", "/\\/"]),
+            "O": random.choice(["0", "()"]),
+            "P": "|>",
+            "Q": random.choice(["9", "0"]),
+            "R": random.choice(["|?", "|2"]),
+            "S": random.choice(["5", "$"]),
+            "T": random.choice(["7", "+"]),
+            "U": "|_|",
+            "V": "\\/",
+            "W": random.choice(["\\/\\/", "\\X/"]),
+            "X": random.choice(["*", "><"]),
+            "Y": "'/",
+            "Z": "2"
+        }
+        pattern = re.compile('|'.join(dic.keys()))
+        result = pattern.sub(lambda x: dic[x.group()], text)
+        await self.bot.say(chat.box(result))
+
+    @leet.command(pass_context=True, aliases=["russian", "cyrillic"])
+    async def cs(self, ctx, *, text: str):
+        """Translate cyrillic to 1337"""
+        text = text.upper()
+        dic_cs = {
+            "А": "A",
+            "Б": "6",
+            "В": "B",
+            "Г": "r",
+            "Д": random.choice(["D", "g"]),
+            "Е": "E",
+            "Ё": "E",
+            "Ж": random.choice(["}|{", ">|<"]),
+            "З": "3",
+            "И": random.choice(["u", "N"]),
+            "Й": "u*",
+            "К": "K",
+            "Л": random.choice(["JI", "/I"]),
+            "М": "M",
+            "Н": "H",
+            "О": "O",
+            "П": random.choice(["II", "n", "/7"]),
+            "Р": "P",
+            "С": "C",
+            "Т": random.choice(["T", "m"]),
+            "У": random.choice(["Y", "y"]),
+            "Ф": random.choice(["cp", "(|)", "qp"]),
+            "Х": "X",
+            "Ц": random.choice(["U", "LL", "L|"]),
+            "Ч": "4",
+            "Ш": random.choice(["W", "LLI"]),
+            "Щ": random.choice(["W", "LLL"]),
+            "Ъ": random.choice(["~b", "`b"]),
+            "Ы": "bl",
+            "Ь": "b",
+            "Э": "-)",
+            "Ю": random.choice(["IO", "10"]),
+            "Я": random.choice(["9", "9I"]),
+            "%": "o\\o"
+        }
+        pattern = re.compile('|'.join(dic_cs.keys()))
+        result = pattern.sub(lambda x: dic_cs[x.group()], text)
+        await self.bot.say(chat.box(result))
 
     @commands.command(pass_context=True)
     async def quote(self, ctx, messageid: str, *, response: str = None):
@@ -162,7 +239,6 @@ class General:
             else:
                 await self.bot.say((response or "") + "\n\n**Quote from " + message.author.name + "#" +
                                    message.author.discriminator + ":**\n```\n" + message.content + "```")
-        await self.bot.delete_message(ctx.message)
 
     @commands.command(pass_context=True, no_pm=True, aliases=['emojiinfo', 'emojinfo'])
     async def emoji(self, ctx, *, emoji: discord.Emoji):
@@ -194,7 +270,6 @@ class General:
                                "\nRoles: " + "\n".join([str(x) for x in allowed_roles]) +
                                "```" +
                                emoji.url)
-        await self.bot.delete_message(ctx.message)
 
     # noinspection PyUnboundLocalVariable
     @commands.command(pass_context=True)
@@ -214,7 +289,6 @@ class General:
         elif intensity >= 10:
             msg = "(づ￣ ³￣)づ" + name + " ⊂(´・ω・｀⊂)"
         await self.bot.say(msg)
-        await self.bot.delete_message(ctx.message)
 
     @commands.command(pass_context=True)
     async def flip(self, ctx, user: discord.Member = None):
@@ -235,13 +309,11 @@ class General:
             await self.bot.say(msg + "(╯°□°）╯︵ " + name[::-1])
         else:
             await self.bot.say("*flips a coin and... " + random.choice(["HEADS!*", "TAILS!*"]))
-        await self.bot.delete_message(ctx.message)
 
     @commands.command(pass_context=True, name='thetime')
     async def _thetime(self, ctx):
         """Send your current time"""
         await self.bot.say(datetime.datetime.now().strftime('%d.%m.%Y %H:%M:%S %Z'))
-        await self.bot.delete_message(ctx.message)
 
     # noinspection PyPep8
     @commands.command(pass_context=True)
@@ -269,7 +341,6 @@ class General:
                 .replace("9", ":nine:")
                 .replace("#", "#⃣")
                 .replace("*", "*⃣"))
-        await self.bot.delete_message(ctx.message)
 
     @commands.command(pass_context=True, aliases=["pingtime", "ping"])
     async def pingt(self, ctx):
@@ -279,7 +350,6 @@ class General:
         await self.bot.send_typing(channel)
         t2 = time.perf_counter()
         await self.bot.say("pseudo-ping: `{}ms`".format(round((t2 - t1) * 1000)))
-        await self.bot.delete_message(ctx.message)
 
     @commands.command(pass_context=True, aliases=['HEX', 'hex'])
     async def color(self, ctx, color: str):
@@ -316,7 +386,11 @@ class General:
             await self.bot.say(
                 "Looks like the `{}`, that you provided is not color HEX\nOr it is too small/too big.\nExample of "
                 "acceptable color HEX: `#1A2B3C`".format(color))
-        await self.bot.delete_message(ctx.message)
+
+    def translate_leet(self, text, wordDict):
+        for key in wordDict:
+            text = text.replace(key, wordDict[key])
+        return text
 
 
 def setup(bot):

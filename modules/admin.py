@@ -19,7 +19,6 @@ class Admin:
         await self.bot.ban(member, delete_message_days=delete_messages)
         await self.bot.say(
             "User `" + member.name + "` banned\n" + str(delete_messages) + " days of user's messages removed")
-        await self.bot.delete_message(ctx.message)
 
     @commands.command(pass_context=True)
     @commands.has_permissions(kick_members=True)
@@ -28,7 +27,6 @@ class Admin:
         User must have kick member permissions"""
         await self.bot.kick(member)
         await self.bot.say("User `" + member.name + "` kicked")
-        await self.bot.delete_message(ctx.message)
 
     @commands.command(pass_context=True, aliases=["prune"])
     @commands.has_permissions(kick_members=True)
@@ -41,7 +39,6 @@ class Admin:
         elif days == 0:
             await self.bot.say(chat.error("\"days\" arg cannot be an zero..."))
             days = 1
-        await self.bot.delete_message(ctx.message)
         to_kick = await self.bot.estimate_pruned_members(ctx.message.server, days=days)
         await self.bot.say(chat.warning("You about to kick **{}** inactive for **{}** days members from this server. "
                                         "Are you sure?\nTo agree, type \"yes\"".format(to_kick, days)))
@@ -61,7 +58,6 @@ class Admin:
         server = ctx.message.server
         invite = await self.bot.create_invite(server)
         await self.bot.say(invite.url)
-        await self.bot.delete_message(ctx.message)
 
     @commands.command(pass_context=True)
     @commands.has_permissions(manage_emojis=True)
@@ -76,7 +72,6 @@ class Admin:
             await self.bot.say("Done.")
         except Exception as e:
             await self.bot.say("Failed: " + chat.inline(e))
-        await self.bot.delete_message(ctx.message)
 
     @commands.command(pass_context=True)
     @commands.has_permissions(manage_nicknames=True)
