@@ -10,7 +10,7 @@ class CommandRemoval:
         self.bot = bot
 
     async def on_message(self, message: discord.Message):
-        if message.content.startswith(config["prefix"]):
+        if message.content.startswith(config["prefix"]) and message.author.id == self.bot.user.id:
             await self.bot.delete_message(message)
 
 

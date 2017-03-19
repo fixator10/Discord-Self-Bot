@@ -20,7 +20,7 @@ initial_extensions = [
     "weather",
     "namegen"
 ]
-version = "F10.0.0.32"
+version = "F10.0.0.33"
 
 def_config = {
     "prefix": "self.",
@@ -73,6 +73,7 @@ bot = commands.Bot(command_prefix=[config["prefix"]], description=description, s
 
 
 ########################################################################################################################
+
 
 @bot.event
 async def on_ready():
