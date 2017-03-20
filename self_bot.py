@@ -20,14 +20,14 @@ initial_extensions = [
     "weather",
     "namegen"
 ]
-version = "F10.0.0.33"
+version = "F10.0.0.34"
 
 def_config = {
     "prefix": "self.",
     "description": "FG17: Discord SelfBot",
+    "max_messages": 5000,
 
     "modules": [
-        "cmd_rm",
         "admin",
         "moderation",
         "tags",
@@ -69,7 +69,11 @@ formatter = helpformat.CustomHelp(show_check_failure=False)
 
 # Set's bot's description and prefixes in a list
 description = config["description"] + "\n" + "Version: \"" + version + "\""
-bot = commands.Bot(command_prefix=[config["prefix"]], description=description, self_bot=True, formatter=formatter)
+bot = commands.Bot(command_prefix=[config["prefix"]],
+                   max_messages=config["max_messages"] or 5000,
+                   description=description,
+                   self_bot=True,
+                   formatter=formatter)
 
 
 ########################################################################################################################
@@ -110,6 +114,11 @@ async def on_command_error(error, ctx):
             error) + "`\nCheck console for further information\n\nIssue tracker: "
                      "<https://github.com/fixator10/Discord-Self-Bot/issues>")
         raise error
+
+
+@bot.event
+async def on_command(command, ctx):
+    await bot.delete_message(ctx.message)
 
 
 ########################################################################################################################
