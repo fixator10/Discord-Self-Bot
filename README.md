@@ -13,7 +13,7 @@ Requires Discord.py
 	* Be sure to select `Use Git from the Windows Command Prompt` on `Adjusting your PATH environment` installation screen
 3. [Download copy of bot](https://github.com/fixator10/Discord-Self-Bot/archive/master.zip) and unzip
 4. You have two possibilities to login
-    - Use your login and passwprd
+    - Use your login and password
     - Press Ctrl+Shift+I in your Discord client or on the Discordapp page in your browser.
 	* Then go to `Application` → `Local Storage` → http://discordapp.com → copy Value of `token` key
 	![Token](http://i.imgur.com/wxuIS8d.png)
