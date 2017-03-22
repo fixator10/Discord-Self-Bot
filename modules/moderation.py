@@ -3,7 +3,7 @@ import random
 import discord
 from discord.ext import commands
 import modules.utils.color_converter as cc
-import modules.utils.checks as check
+from modules.utils.helpers import Checks
 
 
 class Moderation:
@@ -37,7 +37,7 @@ class Moderation:
         em.set_image(url=member.avatar_url)
         em.set_thumbnail(url="https://xenforo.com/community/rgba.php?r=" + str(member.colour.r) + "&g=" + str(
             member.colour.g) + "&b=" + str(member.colour.b) + "&a=255")
-        if check.embeds_allowed(ctx.message):
+        if Checks.embeds_allowed(ctx.message):
             await self.bot.say(embed=em)
         else:
             await self.bot.say("```\n" +
@@ -92,7 +92,7 @@ class Moderation:
         else:
             em.add_field(name="Invite Splash", value="✔ [🔗](" + server.splash_url + ")")
         em.set_image(url=server.icon_url)
-        if check.embeds_allowed(ctx.message):
+        if Checks.embeds_allowed(ctx.message):
             await self.bot.say(embed=em)
         else:
             await self.bot.say("```\n" +
@@ -130,7 +130,7 @@ class Moderation:
         em.add_field(name="Changed roles permissions",
                      value="\n".join([str(x) for x in changed_roles]) or "`Not set`")
         em.add_field(name="Mention", value=channel.mention + "\n`" + channel.mention + "`")
-        if check.embeds_allowed(ctx.message):
+        if Checks.embeds_allowed(ctx.message):
             await self.bot.say(embed=em)
         else:
             await self.bot.say("```\n" +
@@ -166,7 +166,7 @@ class Moderation:
         em.add_field(name="Voice channels:", value="\n".join([str(x) for x in vchans]), inline=False)
         em.set_footer(text="Total count of channels: " + str(len(server.channels)) +
                            " | Text Channels: " + str(len(tchans)) + " | Voice Channels: " + str(len(vchans)))
-        if check.embeds_allowed(ctx.message):
+        if Checks.embeds_allowed(ctx.message):
             await self.bot.say(embed=em)
         else:
             await self.bot.say("**Text channels:**\n```" + "\n".join([str(x) for x in tchans]) +
@@ -194,7 +194,7 @@ class Moderation:
         em.add_field(name="Mention", value=role.mention + "\n`" + role.mention + "`")
         em.set_thumbnail(url="https://xenforo.com/community/rgba.php?r=" + str(role.colour.r) + "&g=" + str(
             role.colour.g) + "&b=" + str(role.colour.b) + "&a=255")
-        if check.embeds_allowed(ctx.message):
+        if Checks.embeds_allowed(ctx.message):
             await self.bot.say(embed=em)
         else:
             await self.bot.say("```\n" +
@@ -225,7 +225,7 @@ class Moderation:
         em = discord.Embed(title="List of roles", description="\n".join([str(x) for x in roles]),
                            colour=random.randint(0, 16777215))
         em.set_footer(text="Total count of roles: " + str(len(server.roles)))
-        if check.embeds_allowed(ctx.message):
+        if Checks.embeds_allowed(ctx.message):
             await self.bot.say(embed=em)
         else:
             await self.bot.say("**List of roles:**\n```" + "\n".join([str(x) for x in roles]) +

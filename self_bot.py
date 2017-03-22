@@ -8,6 +8,7 @@ from discord.ext import commands
 
 import modules.utils.anojibothelp as helpformat
 from modules.utils.dataIO import dataIO
+from modules.utils.helpers import GenericHelper
 
 initial_extensions = [
     "admin",
@@ -20,7 +21,7 @@ initial_extensions = [
     "weather",
     "namegen"
 ]
-version = "F10.0.0.34"
+version = "F10.0.0.35"
 
 def_config = {
     "prefix": "self.",
@@ -60,17 +61,12 @@ if not dataIO.is_valid_json("data/SelfBot/config.json"):
 
 config = dataIO.load_json("data/SelfBot/config.json")
 
-try:
-    modules = config["modules"]
-except KeyError:
-    modules = initial_extensions
-
 formatter = helpformat.CustomHelp(show_check_failure=False)
 
 # Set's bot's description and prefixes in a list
 description = config["description"] + "\n" + "Version: \"" + version + "\""
 bot = commands.Bot(command_prefix=[config["prefix"]],
-                   max_messages=config["max_messages"] or 5000,
+                   max_messages=GenericHelper.check_param("max_messages", 5000),
                    description=description,
                    self_bot=True,
                    formatter=formatter)
@@ -90,7 +86,7 @@ async def on_ready():
     print("---------------------------")
 
     print("Modules Loaded:")
-    for extension in modules:
+    for extension in GenericHelper.check_param("modules", initial_extensions):
         try:
             bot.load_extension("modules." + extension)
             print("* " + extension)

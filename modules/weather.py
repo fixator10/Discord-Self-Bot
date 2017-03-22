@@ -3,7 +3,7 @@ import geocoder
 import discord
 import datetime
 from modules.utils.dataIO import dataIO
-import modules.utils.checks as check
+from modules.utils.helpers import Checks
 from discord.ext import commands
 
 
@@ -53,7 +53,7 @@ class Weather:
                   + ":\n" + by_hour.summary + "\n" + str(by_hour.temperature) + \
                   "˚C" + "\n" + dictionary.get(xstr(by_hour.icon))
         em = discord.Embed(description=content, colour=0xff0000, timestamp=by_hour.time)
-        if check.embeds_allowed(ctx.message):
+        if Checks.embeds_allowed(ctx.message):
             await self.bot.say(embed=em)
         else:
             await self.bot.say(content)
@@ -95,7 +95,7 @@ class Weather:
                       xstr(by_hour.data[i].temperatureMax) + "˚C       " \
                       + dictionary.get(xstr(by_hour.data[i].icon)) + "\n"
         em = discord.Embed(description=content, colour=0xff0000, timestamp=datetime.datetime.now())
-        if check.embeds_allowed(ctx.message):
+        if Checks.embeds_allowed(ctx.message):
             await self.bot.say(embed=em)
         else:
             await self.bot.say(content)

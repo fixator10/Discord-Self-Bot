@@ -127,7 +127,7 @@ class CustomHelp(HelpFormatter):
                 return False
 
             if self.show_check_failure:
-                # we don't wanna bother doing the checks if the user does not
+                # we don't wanna bother doing the Checks if the user does not
                 # care about them, so just return true.
                 return True
 

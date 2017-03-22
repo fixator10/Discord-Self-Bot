@@ -11,7 +11,7 @@ import discord
 from discord.ext import commands
 from yandex_translate import YandexTranslate
 
-import modules.utils.checks as check
+from modules.utils.helpers import Checks
 import modules.utils.color_converter as cc
 import modules.utils.chat_formatting as chat
 from modules.utils.dataIO import dataIO
@@ -42,7 +42,7 @@ class General:
         """Says something with embedded signature
 
         Text changeable in config.json"""
-        if not check.embeds_allowed(ctx.message):
+        if not Checks.embeds_allowed(ctx.message):
             await self.bot.say("Not allowed to send embeds here. Lack `Embed Links` permission")
             return
         em = discord.Embed(title=config["signature_title"], description=config["signature_desc"],
@@ -58,7 +58,7 @@ class General:
         Useful for using emojis on any server without Nitro
         
         Inline code markdown at start and at end of message will be removed"""
-        if not check.embeds_allowed(ctx.message):
+        if not Checks.embeds_allowed(ctx.message):
             await self.bot.say("Not allowed to send embeds here. Lack `Embed Links` permission")
             return
         message = re.sub(r'^\s*(`\s*)?|(\s*`)?\s*$', '', message)
@@ -234,7 +234,7 @@ class General:
             if attachment is not None:
                 attachment = dict(attachment)
                 em.set_image(url=attachment['url'])
-            if check.embeds_allowed(ctx.message):
+            if Checks.embeds_allowed(ctx.message):
                 await self.bot.say(response, embed=em)
             else:
                 await self.bot.say((response or "") + "\n\n**Quote from " + message.author.name + "#" +
@@ -257,7 +257,7 @@ class General:
         if len(allowed_roles) > 0:
             em.add_field(name="Roles", value="\n".join([str(x) for x in allowed_roles]))
         em.set_image(url=emoji.url)
-        if check.embeds_allowed(ctx.message):
+        if Checks.embeds_allowed(ctx.message):
             await self.bot.say(embed=em)
         else:
             await self.bot.say("```\n" +
@@ -370,7 +370,7 @@ class General:
                                timestamp=ctx.message.timestamp)
             em.set_thumbnail(url="https://xenforo.com/community/rgba.php?r=" + str(colorrgb[0]) + "&g=" + str(
                 colorrgb[1]) + "&b=" + str(colorrgb[2]) + "&a=255")
-            if check.embeds_allowed(ctx.message):
+            if Checks.embeds_allowed(ctx.message):
                 await self.bot.say(embed=em)
             else:
                 await self.bot.say("```\n" +
@@ -386,11 +386,6 @@ class General:
             await self.bot.say(
                 "Looks like the `{}`, that you provided is not color HEX\nOr it is too small/too big.\nExample of "
                 "acceptable color HEX: `#1A2B3C`".format(color))
-
-    def translate_leet(self, text, wordDict):
-        for key in wordDict:
-            text = text.replace(key, wordDict[key])
-        return text
 
 
 def setup(bot):
