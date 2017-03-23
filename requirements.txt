@@ -4,3 +4,4 @@ matplotlib
 yandex.translate
 geocoder
 python-forecastio
+psutil
