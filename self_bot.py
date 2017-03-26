@@ -23,7 +23,7 @@ initial_extensions = [
     "namegen",
     "statistics"
 ]
-version = "F10.0.0.35"
+version = "F10.0.0.36"
 
 def_config = {
     "prefix": "self.",
@@ -36,6 +36,7 @@ def_config = {
         "tags",
         "animelist",
         "generic",
+        "trasnlaters",
         "penis",
         "eval",
         "weather",
@@ -95,9 +96,6 @@ class Bot(commands.Bot):
 def initialize(bot_class=Bot):
     bot = bot_class()
 
-    import __main__
-    __main__.send_cmd_help = bot.send_cmd_help  # Backwards
-
     @bot.event
     async def on_ready():
         print("---------------------------")
@@ -124,7 +122,8 @@ def initialize(bot_class=Bot):
     async def on_command_error(error, ctx):
         if isinstance(error, commands.MissingRequiredArgument) or isinstance(error, commands.BadArgument) or isinstance(
                 error, commands.NoPrivateMessage) or isinstance(error, commands.CheckFailure):
-            await bot.send_message(ctx.message.channel, str(error))
+            # await bot.send_message(ctx.message.channel, str(error))
+            await bot.send_cmd_help(ctx)
         elif isinstance(error, commands.CommandNotFound):
             pass
         else:
@@ -137,8 +136,7 @@ def initialize(bot_class=Bot):
     async def on_command(command, ctx):
         await bot.delete_message(ctx.message)
 
-    ########################################################################################################################
-
+    ####################################################################################################################
 
     @bot.command(pass_context=True, name='shutdown', aliases=['off', 'close', 'захлопнись', 'выключить'])
     async def _botshutdown(ctx):
@@ -150,8 +148,8 @@ def initialize(bot_class=Bot):
     async def source(ctx):
         """Source code"""
         await bot.say(
-            "<@95953002774413312>'s original: <https://github.com/DiNitride/Discord-Self-Bot>\n\n<@131813999326134272>'s "
-            "fork (this): https://github.com/fixator10/Discord-Self-Bot")
+            "<@95953002774413312>'s original: <https://github.com/DiNitride/Discord-Self-Bot>\n\n"
+            "<@131813999326134272>'s fork (this): https://github.com/fixator10/Discord-Self-Bot")
 
     @bot.command(pass_context=True, aliases=["bug", "issue"])
     async def server(ctx):
