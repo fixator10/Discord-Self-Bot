@@ -198,6 +198,33 @@ class Translaters:
         result = decoded.decode()
         await self.bot.say(chat.box(result))
 
+    # noinspection PyPep8
+    @commands.command(pass_context=True)
+    async def emojify(self, ctx, *, message: str):
+        """emojify text"""
+        char = "abcdefghijklmnopqrstuvwxyz↓↑←→—.!"
+        tran = "🇦🇧🇨🇩🇪🇫🇬🇭🇮🇯🇰🇱🇲🇳🇴🇵🇶🇷🇸🇹🇺🇻🇼🇽🇾🇿⬇⬆⬅➡➖⏺ℹ"
+        table = str.maketrans(char, tran)
+        name = message.translate(table)
+        char = char.upper()
+        table = str.maketrans(char, tran)
+        name = name.translate(table)
+        await self.bot.say(
+            name.replace(" ", "　　")
+                .replace("", "​")
+                .replace("0", ":zero:")
+                .replace("1", ":one:")
+                .replace("2", ":two:")
+                .replace("3", ":three:")
+                .replace("4", ":four:")
+                .replace("5", ":five:")
+                .replace("6", ":six:")
+                .replace("7", ":seven:")
+                .replace("8", ":eight:")
+                .replace("9", ":nine:")
+                .replace("#", "#⃣")
+                .replace("*", "*⃣"))
+
     @commands.command(pass_context=True, name="urlencode", aliases=["url"])
     async def _urlencode(self, ctx, *, text: str):
         """Encode text to url-like format

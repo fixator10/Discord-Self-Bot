@@ -87,10 +87,10 @@ class Admin:
         server = ctx.message.server
         counter = 0
         for user in server.members:
-            if user.nick is None:
-                nickname = "{} {}".format(nickname, user.name)
-            else:
-                nickname = "{} {}".format(nickname, user.nick)
+            # if user.nick is None:
+            #     nickname = "{} {}".format(nickname, user.name)
+            # else:
+            #     nickname = "{} {}".format(nickname, user.nick)
             try:
                 await self.bot.change_nickname(user, nickname)
             except discord.HTTPException:

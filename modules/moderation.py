@@ -1,9 +1,11 @@
 import random
+import re
 
 import discord
 from discord.ext import commands
 import modules.utils.color_converter as cc
 from modules.utils.helpers import Checks
+import modules.utils.chat_formatting as chat
 
 
 class Moderation:
@@ -230,6 +232,55 @@ class Moderation:
         else:
             await self.bot.say("**List of roles:**\n```" + "\n".join([str(x) for x in roles]) +
                                "```\nTotal count: " + str(len(server.roles)))
+
+    @commands.command(pass_context=True, no_pm=True, aliases=["perms", "permissions"])
+    async def chan_perms(self, ctx, member: discord.Member, channel: discord.Channel = None):
+        """Check user's permission for current or provided channel"""
+        # From Dusty-Cogs for Red-DiscordBot: https://github.com/Lunar-Dust/Dusty-Cogs
+        perms_names = {
+            "add_reactions": "Add Reactions",
+            "attach_files": "Attach Files",
+            "change_nickname": "Change Nickname",
+            "create_instant_invite": "Create Instant Invite",
+            "embed_links": "Embed Links",
+            "external_emojis": "Use External Emojis",
+            "read_message_history": "Read Message History",
+            "read_messages": "Read Messages",
+            "send_messages": "Send Messages",
+            "administrator": "Administrator",
+            "ban_members": "Ban Members",
+            "connect": "Connect",
+            "deafen_members": "Deafen Members",
+            "kick_members": "Kick Members",
+            "manage_channels": "Manage Channels",
+            "manage_emojis": "Manage Emojis",
+            "manage_messages": "Manage Messages",
+            "manage_nicknames": "Manage Nicknames",
+            "manage_roles": "Manage Roles",
+            "manage_server": "Manage Server",
+            "manage_webhooks": "Manage Webhooks",
+            "mention_everyone": "Mention Everyone",
+            "move_members": "Move Members",
+            "mute_members": "Mute Mebmers",
+            "send_tts_messages": "Send TTS Messages",
+            "speak": "Speak",
+            "use_voice_activation": "Use Voice Activity"
+        }
+        if channel is None:
+            channel = ctx.message.channel
+        perms = iter(channel.permissions_for(member))
+        has_perms = " ```diff\n"
+        no_perms = ""
+        for x in perms:
+            if "True" in str(x):
+                pattern = re.compile('|'.join(perms_names.keys()))
+                result = pattern.sub(lambda y: perms_names[y.group()], "+\t{0}\n".format(str(x).split('\'')[1]))
+                has_perms += result
+            else:
+                pattern = re.compile('|'.join(perms_names.keys()))
+                result = pattern.sub(lambda y: perms_names[y.group()], ("-\t{0}\n".format(str(x).split('\'')[1])))
+                no_perms += result
+        await self.bot.say(chat.inline(str(member.server_permissions.value)) + "{0}{1}```".format(has_perms, no_perms))
 
 
 def setup(bot):

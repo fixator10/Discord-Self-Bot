@@ -23,7 +23,7 @@ initial_extensions = [
     "namegen",
     "statistics"
 ]
-version = "F10.0.0.36"
+version = "F10.0.0.37"
 
 def_config = {
     "prefix": "self.",
@@ -99,7 +99,7 @@ def initialize(bot_class=Bot):
     @bot.event
     async def on_ready():
         print("---------------------------")
-        print(config["description"] + "\n" + "Version: \"" + version + "\"")
+        print(config["description"] + "\nVersion: \"" + version + "\"")
         print("---------------------------")
         print('Logged in as')
         print(bot.user.name + "#" + str(bot.user.discriminator))

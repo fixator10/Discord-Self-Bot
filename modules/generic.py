@@ -164,33 +164,6 @@ class General:
         """Send your current time"""
         await self.bot.say(datetime.datetime.now().strftime('%d.%m.%Y %H:%M:%S %Z'))
 
-    # noinspection PyPep8
-    @commands.command(pass_context=True)
-    async def emojify(self, ctx, *, message: str):
-        """emojify text"""
-        char = "abcdefghijklmnopqrstuvwxyz↓↑←→—.!"
-        tran = "🇦🇧🇨🇩🇪🇫🇬🇭🇮🇯🇰🇱🇲🇳🇴🇵🇶🇷🇸🇹🇺🇻🇼🇽🇾🇿⬇⬆⬅➡➖⏺ℹ"
-        table = str.maketrans(char, tran)
-        name = message.translate(table)
-        char = char.upper()
-        table = str.maketrans(char, tran)
-        name = name.translate(table)
-        await self.bot.say(
-            name.replace(" ", "　　")
-                .replace("", "​")
-                .replace("0", ":zero:")
-                .replace("1", ":one:")
-                .replace("2", ":two:")
-                .replace("3", ":three:")
-                .replace("4", ":four:")
-                .replace("5", ":five:")
-                .replace("6", ":six:")
-                .replace("7", ":seven:")
-                .replace("8", ":eight:")
-                .replace("9", ":nine:")
-                .replace("#", "#⃣")
-                .replace("*", "*⃣"))
-
     @commands.command(pass_context=True, aliases=["pingtime", "ping"])
     async def pingt(self, ctx):
         """pseudo-ping time"""
