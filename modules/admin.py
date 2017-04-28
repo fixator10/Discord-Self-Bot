@@ -21,17 +21,32 @@ class Admin:
     @commands.command(no_pm=True, pass_context=True)
     @commands.has_permissions(ban_members=True)
     async def ban(self, ctx, member: discord.Member, delete_messages: int = 1):
-        """Bans a member
-        User must have ban member permissions"""
+        """Bans a member"""
         await self.bot.ban(member, delete_message_days=delete_messages)
         await self.bot.say(
             "User `" + member.name + "` banned\n" + str(delete_messages) + " days of user's messages removed")
 
+    @commands.command(no_pm=True, pass_context=True, aliases=["hackban"])
+    @commands.has_permissions(ban_members=True)
+    async def xban(self, ctx, member_id: str, days: int = 1):
+        """Bans member by id"""
+        member = discord.utils.get(set(self.bot.get_all_members()), id=member_id)
+        try:
+            await self.bot.http.ban(member_id, ctx.message.server.id, days)
+        except discord.Forbidden:
+            await self.bot.say(chat.error("Can't ban `{}`. Insufficient permissions.".format(member_id)))
+        except discord.NotFound:
+            await self.bot.say(chat.error("User with id `{}` not found").format(member_id))
+        else:
+            if member:
+                await self.bot.say("User {} now is banned on this server".format(member.name))
+            else:
+                await self.bot.say("User with id `{}` successfully banned".format(member_id))
+
     @commands.command(no_pm=True, pass_context=True)
     @commands.has_permissions(kick_members=True)
     async def kick(self, ctx, member: discord.Member):
-        """Kicks a member
-        User must have kick member permissions"""
+        """Kicks a member"""
         await self.bot.kick(member)
         await self.bot.say("User `" + member.name + "` kicked")
 

@@ -23,7 +23,7 @@ initial_extensions = [
     "namegen",
     "statistics"
 ]
-version = "F10.0.0.37"
+version = "F10.0.0.38"
 
 def_config = {
     "prefix": "self.",
