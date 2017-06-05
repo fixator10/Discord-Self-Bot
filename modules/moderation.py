@@ -264,7 +264,8 @@ class Moderation:
             "mute_members": "Mute Mebmers",
             "send_tts_messages": "Send TTS Messages",
             "speak": "Speak",
-            "use_voice_activation": "Use Voice Activity"
+            "use_voice_activation": "Use Voice Activity",
+            "view_audit_logs": "View Audit Log"
         }
         if channel is None:
             channel = ctx.message.channel

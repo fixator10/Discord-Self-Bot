@@ -23,7 +23,7 @@ initial_extensions = [
     "namegen",
     "statistics"
 ]
-version = "F10.0.0.38"
+version = "F10.0.0.39"
 
 def_config = {
     "prefix": "self.",
@@ -41,7 +41,8 @@ def_config = {
         "eval",
         "weather",
         "namegen",
-        "statistics"
+        "statistics",
+        "holidays"
     ],
 
     "yandex_translate_API_key": "Your API Key from https://translate.yandex.com/apikeys",
@@ -114,6 +115,7 @@ def initialize(bot_class=Bot):
             except Exception as e:
                 print('Failed to load extension {}\n{}: {}'
                       .format(extension, type(e).__name__, e))
+                raise(e)
         print("---------------------------")
 
         await bot.change_presence(afk=True, status=discord.Status.invisible)
@@ -168,7 +170,7 @@ def initialize(bot_class=Bot):
 
     @bot.command(pass_context=True)
     async def unload(ctx, module: str):
-        """Reloads module"""
+        """Unloads module"""
         try:
             bot.unload_extension("modules." + module)
         except Exception as e:
