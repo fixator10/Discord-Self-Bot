@@ -1,3 +1,10 @@
+# **DISCOTINUED**
+Use [Red-Selfbot](https://github.com/calebj/Red-DiscordBot/tree/selfbot) and [cogs for it](https://github.com/fixator10/f10_red_cogs) instead
+
+
+
+
+
 # Discord-Self-Bot
 A Discord Self bot to do helpful things
 
